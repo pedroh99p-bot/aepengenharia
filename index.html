@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A&P Engenharia | Construção e Reforma no Rio de Janeiro</title>
+<meta name="description" content="Engenharia civil completa no RJ: construção do zero, reformas, laudos e gerenciamento de obras. +20 anos de experiência, equipe própria. Solicite seu orçamento gratuito.">
+<meta name="keywords" content="engenharia civil RJ, reforma Rio de Janeiro, construção residencial RJ, laudo estrutural, gerenciamento de obra">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Fontes Modernas: Outfit para Títulos e Inter para Textos -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS — LIGHT / DARK
+═══════════════════════════════════════ */
+:root {
+  --accent:        #88b08e; /* Verde base */
+  --accent-hover:  #6a9571;
+  --accent-light:  #d8e6db;
+  --accent-text:   #1a2e20; 
+  /* Fundos com leve transparência para a marca d'água aparecer */
+  --bg-primary:    rgba(248, 249, 247, 0.96);
+  --bg-secondary:  rgba(237, 240, 236, 0.88);
+  --bg-card:       #FFFFFF;
+  --text-primary:  #1C2B1E;
+  --text-secondary:#4A6350;
+  --border:        #C2CEBC;
+  --nav-h:         clamp(90px, 9vw, 115px); /* Navbar mais alta para comportar logo maior */
+  --nav-bg:        rgba(248, 249, 247, 0.65);
+  --nav-scroll:    rgba(248, 249, 247, 0.92);
+  --shadow:        0 4px 24px rgba(0,0,0,0.06);
+  --r:             12px;
+}
+[data-theme="dark"] {
+  --accent:        #88b08e; 
+  --accent-hover:  #a5c6aa;
+  --accent-light:  #243327;
+  --accent-text:   #0f1a11;
+  /* Fundos escuros translúcidos */
+  --bg-primary:    rgba(15, 26, 17, 0.96);
+  --bg-secondary:  rgba(21, 36, 24, 0.88);
+  --bg-card:       #1B2B1E;
+  --text-primary:  #F0F4F1;
+  --text-secondary:#9DBF9E;
+  --border:        #2D4530;
+  --nav-bg:        rgba(15, 26, 17, 0.45);
+  --nav-scroll:    rgba(15, 26, 17, 0.88);
+  --shadow:        0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* ── RESET & BODY ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg-primary); /* Fallback */
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif; 
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background .3s ease, color .3s ease;
+}
+
+/* ANTI-DOWNLOAD TOTAL: Bloqueia toque, arrastar e menu de contexto na imagem real */
+img { 
+  max-width: 100%; display: block; 
+  pointer-events: none !important; 
+  -webkit-user-drag: none; 
+  user-select: none; 
+  -webkit-touch-callout: none;
+}
+button, a { font-family: inherit; }
+
+/* ── WATERMARK GLOBAL (FUNDO FIXO) ── */
+.global-watermark {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 90vw; max-width: 800px; height: 90vw; max-height: 800px;
+  background: url('https://res.cloudinary.com/dm9mnc97u/image/upload/v1774298926/Untitled_design_64_kg2jc0.png') no-repeat center;
+  background-size: contain; 
+  opacity: 0.04; 
+  z-index: -1; 
+  pointer-events: none;
+}
+[data-theme="light"] .global-watermark { opacity: 0.06; }
+
+/* ── KEYFRAMES ── */
+@keyframes marquee     { from { transform: translateX(0) }   to { transform: translateX(-50%) } }
+@keyframes shimmerBtn  { from { left: -80% }                  to { left: 130% } }
+@keyframes textShimmer { from { background-position: 200% center } to { background-position: -200% center } }
+@keyframes pulseRing   { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.6)} }
+@keyframes fadeUp      { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes float       { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+/* ── PRELOADER ── */
+#preloader {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity .7s ease, visibility .7s ease;
+}
+#preloader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+.pre-logo-frame {
+  width: 140px; height: 140px;
+  background: var(--accent-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 40px rgba(136,176,142,0.3), inset 0 0 20px rgba(255,255,255,0.4);
+  animation: float 4s ease-in-out infinite;
+}
+.pre-logo-img { max-width: 85px; height: auto; }
+.pre-sub {
+  font-size: .65rem; letter-spacing: .35em;
+  color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2rem;
+  font-family: 'Outfit', sans-serif; text-align: center;
+}
+.pre-track { width: min(200px, 50vw); height: 2px; background: rgba(136,176,142,.15); border-radius: 99px; overflow: hidden; }
+.pre-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent-hover), var(--accent), #b4d1ba); }
+
+/* ── SCROLL REVEAL ── */
+[data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity .65s cubic-bezier(0.2, 0.8, 0.2, 1), transform .65s cubic-bezier(0.2, 0.8, 0.2, 1); }
+[data-reveal].visible { opacity: 1; transform: translateY(0); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
+  font-family: 'Outfit', sans-serif; font-size: .85rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  border: none; border-radius: var(--r);
+  cursor: pointer; text-decoration: none;
+  transition: transform .2s, filter .2s, background .2s, box-shadow .2s;
+  white-space: nowrap; -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(.97) !important; }
+.btn-accent {
+  position: relative; overflow: hidden;
+  padding: 1rem 2rem; background: var(--accent); color: var(--accent-text);
+  box-shadow: 0 4px 14px rgba(136,176,142,.25);
+}
+.btn-accent::after {
+  content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  animation: shimmerBtn 2.8s infinite;
+}
+.btn-accent:hover { filter: brightness(1.05); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(136,176,142,.4); }
+.btn-outline { padding: .9rem 1.8rem; background: transparent; color: var(--text-primary); border: 1.5px solid var(--border); border-radius: var(--r); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.btn-ghost { padding: .75rem 1.45rem; background: transparent; color: var(--accent); border: 1.5px solid var(--accent); border-radius: var(--r); font-size: .75rem; }
+.btn-ghost:hover { background: var(--accent); color: var(--accent-text); transform: translateY(-1px); }
+.btn-full { width: 100%; }
+.btn-lg { padding: 1.1rem 2.2rem; font-size: .9rem; }
+
+/* ── TEXT SHIMMER ── */
+.text-shimmer {
+  background: linear-gradient(90deg, var(--accent-hover), var(--accent), #b4d1ba, var(--accent), var(--accent-hover));
+  background-size: 300% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; animation: textShimmer 5s linear infinite;
+}
+
+/* ── ROLLER ── */
+.roller { overflow: hidden; white-space: nowrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.roller-mid, .roller-bot { padding: .85rem 0; }
+.roller-track { display: inline-flex; will-change: transform; }
+.roller-track.spd-n { animation: marquee 38s linear infinite; }
+.roller-track.spd-s { animation: marquee 52s linear infinite; }
+.roller-track.spd-f { animation: marquee 24s linear infinite; }
+.roller-item { display: inline-flex; align-items: center; gap: .8rem; font-family: 'Outfit', sans-serif; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; font-size: .7rem; }
+.roller-accent { background: var(--accent); border-color: transparent;} .roller-accent .roller-item { color: var(--accent-text); }
+.roller-muted { background: var(--bg-secondary); } .roller-muted .roller-item { color: var(--accent); }
+.roller-sep { opacity: .4; }
+
+/* ── NAVBAR ── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+  height: var(--nav-h); 
+  background: var(--nav-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(136,176,142,0.15);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 max(4vw,1rem);
+  transition: border-color .3s, background .3s, box-shadow .3s, height .3s;
+}
+#navbar.scrolled {
+  background: var(--nav-scroll);
+  border-bottom-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-logo-img { 
+  height: clamp(65px, 8vw, 100px); /* Aumento expressivo da logo */
+  width: auto; 
+  object-fit: contain; 
+  filter: drop-shadow(0px 0px 18px rgba(136, 176, 142, 0.8)); 
+  transition: filter 0.3s, height 0.3s, transform 0.3s;
+}
+.nav-logo-img:hover { transform: scale(1.03); }
+[data-theme="dark"] .nav-logo-img { filter: drop-shadow(0px 0px 24px rgba(255, 255, 255, 0.3)); }
+.nav-right { display: flex; align-items: center; gap: .8rem; }
+.nav-cta { display: none; }
+
+/* theme toggle */
+.theme-toggle { width: 38px; height: 38px; background: none; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: border-color .2s, color .2s, background .2s; }
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.icon-sun { display: none; }
+.icon-moon { display: block; }
+[data-theme="light"] .icon-sun  { display: block; }
+[data-theme="light"] .icon-moon { display: none; }
+
+/* hamburger */
+.hamburger { width: 44px; height: 44px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 4px; -webkit-tap-highlight-color: transparent; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--text-primary); transition: transform .3s, opacity .3s; border-radius: 2px; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+#mobile-menu { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 790; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1.5rem max(4vw,1rem) 2rem; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+#mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.mobile-nav-links { list-style: none; margin-bottom: 1.5rem; }
+.mobile-nav-links li { border-bottom: 1px solid var(--border); }
+.mobile-nav-links a { display: block; padding: 1rem 0; font-family: 'Outfit', sans-serif; font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-secondary); text-decoration: none; transition: color .2s; }
+.mobile-nav-links a:hover { color: var(--accent); }
+
+/* ── SECTION COMMONS ── */
+section { padding: 6rem max(4vw, 1.25rem); position: relative; }
+.eyebrow { display: inline-block; font-family: 'Outfit', sans-serif; font-size: .65rem; font-weight: 800; letter-spacing: .3em; text-transform: uppercase; color: var(--accent); border-left: 3px solid var(--accent); padding-left: .8rem; margin-bottom: 1rem; }
+.section-title { font-family: 'Outfit', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.15; color: var(--text-primary); margin-bottom: 1rem; letter-spacing: -0.02em; }
+.section-sub { font-size: 1.05rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+.divider { width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent), transparent); margin: 1.2rem 0; border-radius: 99px; }
+.divider.center { margin: 1.2rem auto; }
+.text-center { text-align: center; }
+
+/* ── SECTION SEPARATOR ── */
+.sec-sep { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1.2rem max(4vw,1.25rem); background: var(--bg-primary); }
+.sec-sep::before, .sec-sep::after { content: ''; flex: 1; max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+.sec-sep-diamond { width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); opacity: .7; flex-shrink: 0; }
+.sec-sep-line { width: 40px; height: 1px; background: var(--border); flex-shrink: 0; }
+
+/* ── TEXTURE UTILITIES ── */
+.tex-lines { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(45deg, transparent, transparent 38px, rgba(136,176,142,.04) 38px, rgba(136,176,142,.04) 39px); opacity: 0; transition: opacity 1.5s ease; }
+.tex-dots  { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle, rgba(136,176,142,.25) 1.5px, transparent 1.5px); background-size: 32px 32px; opacity: 0; transition: opacity 1.5s ease; }
+.tex-grid  { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(136,176,142,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(136,176,142,.08) 1px, transparent 1px); background-size: 48px 48px; opacity: 0; transition: opacity 1.5s ease; }
+.tex-visible { opacity: 1 !important; }
+
+/* ── HERO ── */
+#hero { 
+  min-height: 100svh; 
+  padding-top: calc(var(--nav-h) + 2rem); 
+  display: flex; align-items: center; 
+  position: relative; overflow: hidden; 
+  background-image: url('https://images.unsplash.com/photo-1541888086425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+.hero-overlay {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(to bottom, rgba(248, 249, 247, 0.88) 0%, rgba(136,176,142,0.65) 100%);
+  transition: background 0.3s;
+}
+[data-theme="dark"] .hero-overlay {
+  background: linear-gradient(to bottom, rgba(15, 26, 17, 0.92) 0%, rgba(136,176,142,0.45) 100%);
+}
+.hero-glow { position: absolute; bottom: -20%; left: 50%; transform: translateX(-50%); width: 70vw; height: 70vw; max-width: 700px; max-height: 700px; background: radial-gradient(circle, rgba(136,176,142,.3) 0%, transparent 70%); pointer-events: none; z-index: 1; }
+.hero-inner { position: relative; z-index: 2; width: 100%; max-width: 900px; margin: 0 auto; padding: 2rem max(4vw,1.25rem) 4rem; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: .6rem; background: var(--accent-light); border: 1px solid var(--accent); border-radius: 99px; padding: .5rem 1.2rem; font-family: 'Outfit', sans-serif; font-size: .75rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 2.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.badge-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulseRing 1.6s ease-in-out infinite; }
+.hero-title { font-family: 'Outfit', sans-serif; font-size: clamp(2.2rem, 8vw, 4.6rem); font-weight: 900; line-height: 1.1; color: var(--text-primary); margin-bottom: 1.5rem; letter-spacing: -0.03em; }
+.hero-sub { font-size: clamp(1rem, 2.5vw, 1.15rem); color: var(--text-primary); max-width: 650px; margin: 0 auto 2.5rem; line-height: 1.8; opacity: 0.9; }
+.hero-btns { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+.hero-social { margin-top: 3.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 700; color: var(--text-primary); letter-spacing: .1em; text-transform: uppercase; opacity: 0.7;}
+.hero-social::before, .hero-social::after { content: ''; flex: 1; max-width: 60px; height: 1.5px; background: var(--accent); opacity: 0.5;}
+
+/* ── DOR — FLIPCARDS ── */
+#dor { background: var(--bg-secondary); }
+.dor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+.flip-card { height: 280px; perspective: 1000px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform .6s cubic-bezier(.4,0,.2,1); transform-style: preserve-3d; }
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 18px; padding: 2rem 1.8rem; display: flex; flex-direction: column; }
+.flip-front { background: var(--bg-card); border: 1.5px solid var(--border); box-shadow: var(--shadow); }
+.flip-front:hover { border-color: var(--accent); }
+.flip-back { background: var(--accent-light); border: 1.5px solid var(--accent); transform: rotateY(180deg); justify-content: center; gap: 1.5rem;}
+.flip-pain-icon { width: 46px; height: 46px; border-radius: 12px; background: rgba(180,60,40,.08); display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem; flex-shrink: 0; font-size: 1.5rem; }
+.flip-pain-tag { font-family: 'Outfit', sans-serif; font-size: .75rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: #c0392b; margin-bottom: .6rem; }
+.flip-pain-text { font-size: 1.05rem; font-weight: 500; color: var(--text-primary); line-height: 1.6; flex: 1; }
+.flip-hint { display: flex; align-items: center; justify-content: flex-end; gap: .4rem; margin-top: auto; font-family: 'Outfit', sans-serif; font-size: .65rem; font-weight: 600; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; }
+.flip-sol-tag { font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: .6rem; }
+.flip-sol-text { font-size: 1.05rem; font-weight: 500; color: var(--text-primary); line-height: 1.6; }
+.flip-back .btn-ghost { font-size: .75rem; padding: .7rem 1.4rem; border-radius: 99px; align-self: flex-start; background: var(--bg-card);}
+
+/* ── QUIZ ── */
+#quiz { background: var(--bg-primary); }
+.quiz-shell { max-width: 680px; margin: 0 auto; }
+.quiz-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+.quiz-head { padding: 1.8rem 2rem 1.5rem; border-bottom: 1px solid var(--border); }
+.quiz-progress-bar { height: 4px; background: var(--bg-secondary); border-radius: 99px; margin-top: 1.2rem; overflow: hidden; }
+.quiz-progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width .4s ease; }
+.quiz-step-label { font-family: 'Outfit', sans-serif; font-size: .65rem; font-weight: 800; letter-spacing: .25em; text-transform: uppercase; color: var(--accent); margin-bottom: .5rem; }
+.quiz-question { font-family: 'Outfit', sans-serif; font-size: clamp(1.3rem, 4vw, 1.7rem); font-weight: 800; line-height: 1.3; color: var(--text-primary); }
+.quiz-body { padding: 2rem; }
+.quiz-opts { display: flex; flex-direction: column; gap: .7rem; }
+.quiz-opt { width: 100%; text-align: left; background: var(--bg-secondary); border: 1.5px solid transparent; border-radius: 12px; padding: 1.2rem; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: border-color .2s, background .2s, transform .15s; -webkit-tap-highlight-color: transparent; }
+.quiz-opt:hover { border-color: var(--accent); background: var(--accent-light); transform: translateX(4px); }
+.opt-icon { font-size: 1.4rem; flex-shrink: 0; }
+.opt-sub { font-size: .8rem; color: var(--text-secondary); display: block; margin-top: .15rem; font-weight: 400; line-height: 1.4; }
+.quiz-back { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: .75rem; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: .08em; display: flex; align-items: center; gap: .4rem; margin-bottom: 1.2rem; transition: color .2s; text-transform: uppercase;}
+.quiz-back:hover { color: var(--accent); }
+.quiz-result { animation: fadeUp .4s ease-out; }
+.quiz-result-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.result-badge { display: inline-block; padding: .35rem 1rem; border-radius: 99px; font-family: 'Outfit', sans-serif; font-size: .65rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 1rem; background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent); }
+.quiz-result-title { font-family: 'Outfit', sans-serif; font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 800; color: var(--text-primary); margin-bottom: .8rem; line-height: 1.25; }
+.quiz-result-desc { font-size: 1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.8rem; }
+.quiz-result-summary { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1.8rem; font-size: .9rem; color: var(--text-secondary); line-height: 1.8; }
+.quiz-result-summary strong { color: var(--accent); display: block; font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; margin-bottom: .5rem; }
+.quiz-reset { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: .85rem; font-family: 'Inter', sans-serif; font-weight: 500; text-decoration: underline; margin-top: 1.5rem; transition: color .2s; }
+.quiz-reset:hover { color: var(--accent); }
+
+/* ── SERVIÇOS ── */
+#servicos { background: var(--bg-secondary); }
+.servicos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 1.5rem; max-width: 1100px; margin: 3.5rem auto 0; }
+.servico-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .3s, transform .25s, box-shadow .25s; box-shadow: var(--shadow); }
+.servico-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 12px 32px rgba(136,176,142,.15); }
+.servico-card-top { padding: 2.5rem 2rem 1.5rem; border-bottom: 1px solid var(--border); flex: 1; }
+.servico-icon { font-size: 2.5rem; margin-bottom: 1.2rem; }
+.servico-name { font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: .8rem; line-height: 1.2; }
+.servico-desc { font-size: .95rem; color: var(--text-secondary); line-height: 1.7; }
+.servico-card-bot { padding: 1.5rem 2rem; }
+
+/* ── ESPECIALISTA ── */
+#especialista { background: var(--bg-primary); overflow: hidden; }
+.esp-outer { max-width: 1100px; margin: 0 auto; }
+.esp-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; align-items: center; }
+.esp-photo-col { position: relative; }
+.esp-photo-sticky { position: sticky; top: 120px; }
+.esp-photo-frame {
+  width: 100%; aspect-ratio: 1/1; min-height: 350px; 
+  border-radius: 24px; overflow: hidden;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 10px var(--accent-light), var(--shadow);
+  position: relative;
+  background: var(--bg-card);
+  display: flex; align-items: flex-end;
+}
+/* Anti-download layer: block pointer events on wrapper or use transparent pseudo element */
+.esp-photo-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 50%); z-index: 10; }
+.esp-photo-caption { position: relative; z-index: 11; padding: 1.8rem; width: 100%; }
+.esp-photo-name { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #fff; display: block; margin-bottom: .2rem;}
+.esp-photo-crm { font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); display: block; }
+
+.esp-logo-inline { max-width: 180px; height: auto; margin-bottom: 1.2rem; display: block; filter: drop-shadow(0px 4px 12px rgba(136,176,142,0.3));}
+.esp-copy .section-title { margin-bottom: 0.3rem; font-size: clamp(2rem, 5vw, 2.8rem); }
+.esp-copy .esp-cargo { font-family: 'Outfit', sans-serif; font-size: 1.15rem; color: var(--accent); font-weight: 700; margin-bottom: 2rem; letter-spacing: .02em; }
+/* Nova caixa de destaque para a copy */
+.esp-highlight-box {
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--accent);
+  padding: 1.8rem; border-radius: 0 16px 16px 0;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.esp-highlight-box p { font-size: 1.05rem; font-weight: 500; color: var(--text-primary); margin: 0; line-height: 1.7; }
+.esp-copy p { font-size: 1rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.2rem; }
+.esp-creds { display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0 2.5rem; }
+.cred-item { display: flex; align-items: center; gap: 1rem; font-size: 1rem; font-weight: 500; color: var(--text-primary); }
+.cred-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 8px var(--accent); }
+.esp-cta-row { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+/* ── NÚMEROS ── */
+#numeros { background: var(--accent); padding: 5rem max(4vw,1.25rem); }
+.numeros-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+.numeros-title { font-family: 'Outfit', sans-serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; color: var(--accent-text); margin-bottom: 3.5rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; }
+.stat-item { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 18px; padding: 2.5rem 1.5rem; text-align: center; transition: background .2s, transform .2s; }
+.stat-item:hover { background: rgba(255,255,255,.25); transform: translateY(-6px); }
+.stat-num { font-family: 'Outfit', sans-serif; font-size: 2.8rem; font-weight: 900; color: var(--accent-text); line-height: 1; display: block; margin-bottom: .6rem; }
+.stat-lbl { font-size: .8rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--accent-text); opacity: 0.9; }
+
+/* ── PORTFÓLIO ── */
+#portfolio { background: var(--bg-primary); overflow: hidden; }
+.portfolio-track-wrap { margin-top: 4rem; overflow: hidden; cursor: grab; user-select: none; -webkit-user-select: none; padding-bottom: 2rem;}
+.portfolio-track-wrap:active { cursor: grabbing; }
+.portfolio-track { display: flex; gap: 1.8rem; will-change: transform; padding: 0 max(4vw,1.25rem); }
+.portfolio-card { flex-shrink: 0; width: min(360px, 85vw); background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 20px; overflow: hidden; transition: border-color .3s, transform .2s; box-shadow: var(--shadow); }
+.portfolio-card:hover { border-color: var(--accent); transform: translateY(-6px); }
+.portfolio-photo { width: 100%; aspect-ratio: 4/3; background: var(--accent-light); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .8rem; }
+/* Anti-download block cover */
+.portfolio-photo::after { content: ''; position: absolute; inset: 0; z-index: 10; background: transparent; }
+.portfolio-photo-label { font-family: 'Outfit', sans-serif; font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); font-weight: 800; z-index: 2; position: relative;}
+.portfolio-photo span { font-size: 2.8rem; z-index: 2; position: relative;}
+.portfolio-body { padding: 1.8rem; }
+.portfolio-stars { display: flex; gap: .25rem; margin-bottom: 1rem; }
+.portfolio-stars svg { width: 18px; height: 18px; fill: #f4c430; }
+.portfolio-google { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; }
+.portfolio-google svg { width: 18px; height: 18px; flex-shrink: 0; } 
+.portfolio-google span { font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text-secondary); }
+.portfolio-text { font-size: .95rem; color: var(--text-secondary); line-height: 1.7; font-style: italic; margin-bottom: 1.2rem; }
+.portfolio-author { font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 800; color: var(--accent); letter-spacing: .05em; }
+.portfolio-tipo { font-size: .75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .08em; margin-top: .4rem; font-weight: 500;}
+.portfolio-cta { text-align: center; margin-top: 3.5rem; padding: 0 max(4vw,1.25rem); }
+.portfolio-headline { font-family: 'Outfit', sans-serif; font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 800; color: var(--text-primary); margin-bottom: 1rem; line-height: 1.3;}
+
+/* ── MAPA ── */
+#mapa { background: var(--bg-secondary); }
+.mapa-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+.regioes-list { list-style: none; margin-bottom: 2rem; }
+.regiao-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.2rem 0; border-bottom: 1px solid var(--border); }
+.regiao-item:last-child { border-bottom: none; }
+.regiao-icon { color: var(--accent); flex-shrink: 0; margin-top: .15rem; width: 22px; height: 22px;}
+.regiao-name { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-bottom: .3rem; }
+.regiao-bairros { font-size: .9rem; color: var(--text-secondary); line-height: 1.6; }
+.mapa-embed-wrap { border-radius: 20px; overflow: hidden; border: 1.5px solid var(--border); height: 500px; box-shadow: var(--shadow);}
+.mapa-embed-wrap iframe { width: 100%; height: 100%; border: none; filter: invert(88%) hue-rotate(180deg) saturate(.7) brightness(.87); }
+[data-theme="light"] .mapa-embed-wrap iframe { filter: none; }
+.mapa-presencial { background: var(--bg-card); border: 1.5px solid var(--accent); border-radius: 16px; padding: 1.8rem; margin-top: 1.8rem; display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; box-shadow: 0 4px 14px rgba(136,176,142,.15);}
+.mapa-presencial-icon { width: 50px; height: 50px; background: var(--accent-light); border: 1.5px solid var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent); }
+.mapa-presencial-text strong { display: block; font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-bottom: .2rem; }
+.mapa-presencial-text span { font-size: .85rem; color: var(--text-secondary); }
+
+/* ── FAQ ── */
+#faq { background: var(--bg-primary); }
+.faq-shell { max-width: 760px; margin: 0 auto; }
+.faq-list { margin-top: 3rem; display: flex; flex-direction: column; gap: .8rem; }
+.faq-item { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .25s, box-shadow .2s; box-shadow: var(--shadow); }
+.faq-item.open { border-color: var(--accent); box-shadow: 0 6px 20px rgba(136,176,142,.15);}
+.faq-q { width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 1.4rem 1.8rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-family: 'Inter', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text-primary); transition: color .2s; }
+.faq-q:hover { color: var(--accent); }
+.faq-chevron { width: 20px; height: 20px; flex-shrink: 0; transition: transform .3s ease; color: var(--accent); }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s ease; font-size: .95rem; color: var(--text-secondary); line-height: 1.8; padding: 0 1.8rem; }
+.faq-item.open .faq-a { max-height: 400px; padding: 0 1.8rem 1.8rem; }
+
+/* ── OFERTA FINAL ── */
+#oferta { background: var(--bg-secondary); position: relative; overflow: hidden; }
+.oferta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 80vw; height: 80vw; max-width: 800px; max-height: 800px; background: radial-gradient(circle, rgba(136,176,142,.15) 0%, transparent 65%); pointer-events: none; }
+.oferta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; text-align: center; }
+.oferta-ornament { display: flex; align-items: center; justify-content: center; gap: 1.2rem; margin-bottom: 2rem; }
+.orn-line { flex: 1; max-width: 80px; height: 2px; background: var(--border); }
+.oferta-tag { background: var(--accent-light); border: 1px solid var(--accent); border-radius: 99px; padding: .4rem 1.1rem; font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+.oferta-title { font-family: 'Outfit', sans-serif; font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 900; line-height: 1.1; color: var(--text-primary); margin-bottom: 1.2rem; letter-spacing: -0.02em;}
+.oferta-sub { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2.5rem; }
+.oferta-btns { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+/* Correção do Check/V Gigante -> Limitando o tamanho do ícone SVG! */
+.oferta-promise { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: 1.5rem; font-size: .75rem; color: var(--text-secondary); font-weight: 500; }
+.oferta-promise svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+
+/* ── FOOTER ── */
+footer { background: var(--bg-primary); border-top: 1px solid var(--border); padding: 5rem max(4vw,1.25rem) 0; }
+.footer-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+.footer-brand .f-logo-img { max-width: 140px; border-radius: 12px; height: auto; margin-bottom: 1.2rem; }
+.footer-brand .f-tag { font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 1.5rem; }
+.footer-brand .f-copy { font-size: .9rem; color: var(--text-secondary); line-height: 1.8; max-width: 300px; }
+.footer-col h4 { font-family: 'Outfit', sans-serif; font-size: .8rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.footer-col a { font-size: .9rem; color: var(--text-secondary); text-decoration: none; transition: color .2s; display: flex; align-items: center; gap: .8rem; }
+.footer-col a:hover { color: var(--text-primary); }
+.footer-bottom { max-width: 1100px; margin: 0 auto; padding: 2rem 0; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: .8rem; color: var(--text-secondary); }
+.footer-bottom a { color: var(--text-secondary); text-decoration: none; font-weight: 500;}
+.footer-bottom a:hover { color: var(--accent); }
+.footer-credits { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 1.2rem max(4vw,1rem); text-align: center; font-size: .75rem; color: var(--text-secondary); letter-spacing: .05em; }
+.footer-credits a { color: var(--accent); text-decoration: none; font-weight: 700; }
+
+/* ── FLOAT BTNS ── */
+.float-btns { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 700; display: flex; flex-direction: column; gap: .8rem; align-items: flex-end; }
+.float-btn { width: 60px; height: 60px; border-radius: 99px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(0,0,0,.25); transition: transform .25s, box-shadow .25s; -webkit-tap-highlight-color: transparent; position: relative; }
+.float-btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+.float-btn:active { transform: scale(.94); }
+.float-btn-wa { background: #25D366; }
+.float-btn-ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.float-tooltip { position: absolute; right: calc(100% + .8rem); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); border: 1.5px solid var(--border); border-radius: 8px; padding: .6rem 1rem; font-family: 'Outfit', sans-serif; font-size: .8rem; font-weight: 700; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .2s; letter-spacing: .05em; box-shadow: var(--shadow);}
+.float-btn:hover .float-tooltip { opacity: 1; }
+
+/* ── OTIMIZAÇÃO MOBILE FIRST / IPHONE ── */
+@media (max-width: 768px) {
+  section { padding: 4.5rem 1rem; }
+  .hero-inner { padding-top: 2rem; padding-bottom: 2rem; }
+  .hero-title { font-size: clamp(2.2rem, 10vw, 2.5rem); }
+  .flip-card { height: 290px; } /* Mais respiro para telas pequenas */
+  .esp-layout { gap: 2.5rem; grid-template-columns: 1fr; }
+  .esp-photo-frame { min-height: 300px; border-radius: 16px; }
+  .esp-highlight-box { padding: 1.5rem; border-radius: 12px; }
+  .mapa-grid { gap: 3rem; grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 3rem; margin-bottom: 2rem; }
+  .nav-logo-img { filter: drop-shadow(0px 0px 12px rgba(136, 176, 142, 0.6)); } /* Ajuste de glow p/ mobile */
+}
+</style>
+</head>
+<body>
+
+<!-- MARCA D'ÁGUA GLOBAL -->
+<div class="global-watermark"></div>
+
+<!-- ══════════════════════════════════
+  PRELOADER
+══════════════════════════════════ -->
+<div id="preloader">
+  <div class="pre-logo-frame">
+    <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774296440/unnamed_ra8wtp.png" alt="A&P Engenharia" class="pre-logo-img">
+  </div>
+  <div class="pre-sub">Construções em Geral · Rio de Janeiro</div>
+  <div class="pre-track"><div class="pre-bar" id="preBar"></div></div>
+</div>
+
+<!-- ══════════════════════════════════
+  NAVBAR
+══════════════════════════════════ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <img class="nav-logo-img" src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774298926/Untitled_design_64_kg2jc0.png" alt="A&P Engenharia">
+  </a>
+  <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema" title="Alternar modo claro/escuro">
+      <svg class="icon-sun" width="22" height="22" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.22 3.22l1.42 1.42M13.36 13.36l1.42 1.42M3.22 14.78l1.42-1.42M13.36 4.64l1.42-1.42" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <svg class="icon-moon" width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M14 10a6 6 0 0 1-8-8 6 6 0 1 0 8 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <button class="btn btn-accent nav-cta" onclick="abrirWhatsApp('navbar')" style="border-radius:99px;font-size:.75rem;padding:.8rem 1.6rem">
+      Solicitar Orçamento
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div id="mobile-menu">
+    <ul class="mobile-nav-links">
+      <li><a href="#hero"        onclick="closeMenu()">Início</a></li>
+      <li><a href="#servicos"    onclick="closeMenu()">Serviços</a></li>
+      <li><a href="#dor"         onclick="closeMenu()">Por Que a A&amp;P</a></li>
+      <li><a href="#especialista"onclick="closeMenu()">Especialista</a></li>
+      <li><a href="#portfolio"   onclick="closeMenu()">Portfólio</a></li>
+      <li><a href="#mapa"        onclick="closeMenu()">Contato</a></li>
+    </ul>
+    <button class="btn btn-accent btn-full" onclick="abrirWhatsApp('menu_mobile');closeMenu()" style="border-radius:99px;">
+      Solicitar Orçamento pelo WhatsApp
+      <svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: HERO
+══════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-badge" data-reveal><span class="badge-pulse"></span>O Fim da Dor de Cabeça na Sua Obra</div>
+    <h1 class="hero-title" data-reveal data-delay="80">
+      Engenharia de Verdade para Construir e Reformar<br><span class="text-shimmer">Sem Surpresas</span>
+    </h1>
+    <p class="hero-sub" data-reveal data-delay="160">
+      Esqueça os atrasos e os orçamentos estourados. Transformamos o seu projeto em realidade com planejamento rigoroso, equipe própria e transparência absoluta do início ao fim.
+    </p>
+    <div class="hero-btns" data-reveal data-delay="240">
+      <button class="btn btn-accent btn-lg" onclick="abrirWhatsApp('hero')">
+        Solicitar Orçamento Gratuito
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <a href="#portfolio" class="btn btn-outline btn-lg">Ver Portfólio de Obras</a>
+    </div>
+    <div class="hero-social" data-reveal data-delay="320">+200 obras entregues · Equipe própria · RJ e Grande Rio</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  ROLLER 1 — ENTRE HERO E DOR
+══════════════════════════════════ -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+<div class="roller roller-accent roller-mid">
+  <div class="roller-track spd-n">
+    <span class="roller-item">✦ Engenharia Civil Completa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria 100%</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obras com ART CREA-RJ</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos de Mercado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Transparência Total na Obra</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Toda a Região Metropolitana do Rio</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Engenharia Civil Completa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria 100%</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obras com ART CREA-RJ</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos de Mercado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Transparência Total na Obra</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Toda a Região Metropolitana do Rio</span><span class="roller-item roller-sep">·</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: DOR
+══════════════════════════════════ -->
+<section id="dor" class="rel">
+  <div class="tex-dots js-bg-reveal"></div>
+  <div class="dor-header" style="position:relative;z-index:1">
+    <div class="eyebrow" data-reveal>Já passou por isso?</div>
+    <h2 class="section-title" data-reveal data-delay="80">Problemas que Arruínam<br>Obras no Rio de Janeiro</h2>
+    <div class="divider center" data-reveal data-delay="110"></div>
+    <p class="section-sub" data-reveal data-delay="145">Toque nos cards para ver como a A&amp;P resolve cada problema.</p>
+  </div>
+  <div class="dor-grid" style="position:relative;z-index:1" data-reveal data-delay="180">
+
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <div class="flip-pain-icon">⏰</div>
+          <div class="flip-pain-tag">ATRASOS CONSTANTES</div>
+          <div class="flip-pain-text">Prazo que não é cumprido — a obra vira uma novela sem fim e desgastante.</div>
+          <div class="flip-hint"><svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M3 6.5h3.5M9 4l3 2.5-3 2.5M1.5 3.5v5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>ver solução</div>
+        </div>
+        <div class="flip-back">
+          <div><div class="flip-sol-tag">✦ Com a A&amp;P Engenharia</div><div class="flip-sol-text">Cronograma definido no contrato com marcos mensuráveis e relatório semanal de avanço.</div></div>
+          <button class="btn btn-ghost" onclick="event.stopPropagation();abrirWhatsApp('dor_prazo')">Solicitar Orçamento →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <div class="flip-pain-icon">💸</div>
+          <div class="flip-pain-tag">ESTOURO DE ORÇAMENTO</div>
+          <div class="flip-pain-text">Orçamento que explode no meio do caminho com custos surpresa a todo momento.</div>
+          <div class="flip-hint"><svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M3 6.5h3.5M9 4l3 2.5-3 2.5M1.5 3.5v5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>ver solução</div>
+        </div>
+        <div class="flip-back">
+          <div><div class="flip-sol-tag">✦ Com a A&amp;P Engenharia</div><div class="flip-sol-text">Preço fechado no contrato. Planilha orçamentária detalhada antes de começar.</div></div>
+          <button class="btn btn-ghost" onclick="event.stopPropagation();abrirWhatsApp('dor_orcamento')">Solicitar Orçamento →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <div class="flip-pain-icon">🔧</div>
+          <div class="flip-pain-tag">MÃO DE OBRA AMADORA</div>
+          <div class="flip-pain-text">Empreiteiros que somem ou mandam mão de obra despreparada para a sua casa.</div>
+          <div class="flip-hint"><svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M3 6.5h3.5M9 4l3 2.5-3 2.5M1.5 3.5v5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>ver solução</div>
+        </div>
+        <div class="flip-back">
+          <div><div class="flip-sol-tag">✦ Com a A&amp;P Engenharia</div><div class="flip-sol-text">100% equipe própria — pedreiros, eletricistas e técnicos diretamente contratados.</div></div>
+          <button class="btn btn-ghost" onclick="event.stopPropagation();abrirWhatsApp('dor_equipe')">Solicitar Orçamento →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <div class="flip-pain-icon">❓</div>
+          <div class="flip-pain-tag">FALTA DE TRANSPARÊNCIA</div>
+          <div class="flip-pain-text">Falta de transparência e comunicação: você nunca sabe o que está acontecendo na obra.</div>
+          <div class="flip-hint"><svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M3 6.5h3.5M9 4l3 2.5-3 2.5M1.5 3.5v5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>ver solução</div>
+        </div>
+        <div class="flip-back">
+          <div><div class="flip-sol-tag">✦ Com a A&amp;P Engenharia</div><div class="flip-sol-text">Relatórios semanais com fotos e atualizações por WhatsApp. Visite quando quiser.</div></div>
+          <button class="btn btn-ghost" onclick="event.stopPropagation();abrirWhatsApp('dor_transparencia')">Solicitar Orçamento →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-front">
+          <div class="flip-pain-icon">🔄</div>
+          <div class="flip-pain-tag">RETRABALHO E DESPERDÍCIO</div>
+          <div class="flip-pain-text">Retrabalho caro e frustrante por falta de planejamento técnico desde o início do projeto.</div>
+          <div class="flip-hint"><svg width="14" height="14" viewBox="0 0 13 13" fill="none"><path d="M3 6.5h3.5M9 4l3 2.5-3 2.5M1.5 3.5v5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>ver solução</div>
+        </div>
+        <div class="flip-back">
+          <div><div class="flip-sol-tag">✦ Com a A&amp;P Engenharia</div><div class="flip-sol-text">Projeto executivo detalhado antes de qualquer obra. Engenheiro presente sempre.</div></div>
+          <button class="btn btn-ghost" onclick="event.stopPropagation();abrirWhatsApp('dor_retrabalho')">Solicitar Orçamento →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p style="text-align:center;margin-top:2.5rem;font-size:1rem;color:var(--text-secondary);position:relative;z-index:1;" data-reveal data-delay="220">
+    Esses problemas têm solução — e começa com escolher a engenharia certa desde o primeiro dia.
+  </p>
+</section>
+
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: QUIZ
+══════════════════════════════════ -->
+<section id="quiz" class="rel">
+  <div class="tex-grid js-bg-reveal"></div>
+  <div class="text-center" style="margin-bottom:3.5rem;position:relative;z-index:1">
+    <div class="eyebrow" data-reveal>Qual é o Seu Projeto?</div>
+    <h2 class="section-title" data-reveal data-delay="80">Receba uma Estimativa<br>Personalizada</h2>
+    <div class="divider center" data-reveal data-delay="110"></div>
+    <p class="section-sub" data-reveal data-delay="145">Responda 3 perguntas rápidas e nosso engenheiro prepara um orçamento sob medida.</p>
+  </div>
+  <div class="quiz-shell" style="position:relative;z-index:1" data-reveal data-delay="175"
+    x-data="{
+      etapa:1, respostas:{}, finalizado:false,
+      labels:{
+        tipo:{obra_nova:'Obra nova',reforma:'Reforma',laudo:'Laudo / Projeto',fiscalizacao:'Fiscalização de obra'},
+        porte:{pequeno:'Pequeno (até 50m²)',medio:'Médio (50–200m²)',grande:'Grande (+200m²)',nao_sei:'Ainda não sei'},
+        inicio:{imediato:'Imediatamente',tres_meses:'Em até 3 meses',seis_meses:'Em 6 meses ou mais',pesquisando:'Estou pesquisando'}
+      },
+      proxima(c,v){this.respostas[c]=v;if(this.etapa<3)this.etapa++;else this.finalizado=true},
+      reiniciar(){this.etapa=1;this.respostas={};this.finalizado=false},
+      get progresso(){return this.finalizado?100:((this.etapa-1)/3)*100},
+      get resumo(){const r=this.respostas;return[r.tipo?'🏗️ Serviço: '+this.labels.tipo[r.tipo]:'',r.porte?'📐 Porte: '+this.labels.porte[r.porte]:'',r.inicio?'📅 Início: '+this.labels.inicio[r.inicio]:''].filter(Boolean).join('\n')}
+    }">
+    <div class="quiz-card">
+      <div class="quiz-head">
+        <div class="quiz-step-label" x-show="!finalizado">Pergunta <span x-text="etapa"></span> de 3</div>
+        <div class="quiz-step-label" x-show="finalizado">Resultado do Diagnóstico</div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" :style="'width:'+progresso+'%'"></div></div>
+      </div>
+      <div class="quiz-body" x-show="!finalizado">
+        <div x-show="etapa===1" style="animation:fadeUp .35s ease-out">
+          <p class="quiz-question" style="margin-bottom:1.5rem">O que você precisa?</p>
+          <div class="quiz-opts">
+            <button class="quiz-opt" @click="proxima('tipo','obra_nova')"><span class="opt-icon">🏗️</span><span><strong>Obra nova</strong><span class="opt-sub">Construção do zero — residencial ou comercial</span></span></button>
+            <button class="quiz-opt" @click="proxima('tipo','reforma')"><span class="opt-icon">🔨</span><span><strong>Reforma</strong><span class="opt-sub">Reforma completa ou parcial</span></span></button>
+            <button class="quiz-opt" @click="proxima('tipo','laudo')"><span class="opt-icon">📐</span><span><strong>Laudo / Projeto</strong><span class="opt-sub">Laudo estrutural, projeto ou consultoria</span></span></button>
+            <button class="quiz-opt" @click="proxima('tipo','fiscalizacao')"><span class="opt-icon">📋</span><span><strong>Fiscalização de obra</strong><span class="opt-sub">Acompanhamento e controle de qualidade</span></span></button>
+          </div>
+        </div>
+        <div x-show="etapa===2" style="animation:fadeUp .35s ease-out">
+          <button class="quiz-back" @click="etapa=1"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M7.5 2L3 6l4.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar</button>
+          <p class="quiz-question" style="margin-bottom:1.5rem">Qual é o porte do projeto?</p>
+          <div class="quiz-opts">
+            <button class="quiz-opt" @click="proxima('porte','pequeno')"><span class="opt-icon">🏠</span><span><strong>Pequeno</strong><span class="opt-sub">Até 50m²</span></span></button>
+            <button class="quiz-opt" @click="proxima('porte','medio')"><span class="opt-icon">🏢</span><span><strong>Médio</strong><span class="opt-sub">50 a 200m²</span></span></button>
+            <button class="quiz-opt" @click="proxima('porte','grande')"><span class="opt-icon">🏗️</span><span><strong>Grande</strong><span class="opt-sub">Acima de 200m²</span></span></button>
+            <button class="quiz-opt" @click="proxima('porte','nao_sei')"><span class="opt-icon">🤔</span><span><strong>Ainda não sei</strong><span class="opt-sub">Preciso de orientação técnica</span></span></button>
+          </div>
+        </div>
+        <div x-show="etapa===3" style="animation:fadeUp .35s ease-out">
+          <button class="quiz-back" @click="etapa=2"><svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M7.5 2L3 6l4.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Voltar</button>
+          <p class="quiz-question" style="margin-bottom:1.5rem">Quando quer iniciar?</p>
+          <div class="quiz-opts">
+            <button class="quiz-opt" @click="proxima('inicio','imediato')"><span class="opt-icon">🚀</span><span><strong>Imediatamente</strong><span class="opt-sub">Quero começar o quanto antes</span></span></button>
+            <button class="quiz-opt" @click="proxima('inicio','tres_meses')"><span class="opt-icon">📅</span><span><strong>Em até 3 meses</strong><span class="opt-sub">Ainda preciso de planejamento</span></span></button>
+            <button class="quiz-opt" @click="proxima('inicio','seis_meses')"><span class="opt-icon">🗓️</span><span><strong>Em 6 meses ou mais</strong><span class="opt-sub">Quero me planejar com antecedência</span></span></button>
+            <button class="quiz-opt" @click="proxima('inicio','pesquisando')"><span class="opt-icon">🔍</span><span><strong>Estou pesquisando</strong><span class="opt-sub">Só quero entender as opções agora</span></span></button>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-body quiz-result" x-show="finalizado">
+        <div class="quiz-result-icon">🏗️</div>
+        <div class="result-badge">Diagnóstico Concluído</div>
+        <h3 class="quiz-result-title">Ótimo! Temos o Serviço Certo para o Seu Projeto</h3>
+        <p class="quiz-result-desc">Com base nas suas respostas, nosso engenheiro pode preparar um orçamento sob medida. Clique abaixo para enviar pelo WhatsApp — respondemos em até 2 horas.</p>
+        <div class="quiz-result-summary"><strong>Resumo do seu diagnóstico</strong><span x-html="resumo.replace(/\n/g,'<br>')"></span></div>
+        <button class="btn btn-accent btn-full btn-lg" @click="abrirWhatsAppQuiz(resumo)">
+          Receber meu orçamento personalizado
+          <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div style="text-align:center"><button class="quiz-reset" @click="reiniciar()">↺ Refazer diagnóstico</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: SERVIÇOS
+══════════════════════════════════ -->
+<section id="servicos" class="rel">
+  <div class="text-center" style="position:relative;z-index:1">
+    <div class="eyebrow" data-reveal>O Que Fazemos</div>
+    <h2 class="section-title" data-reveal data-delay="80">O que a A&amp;P Engenharia<br>Faz por Você</h2>
+    <div class="divider center" data-reveal data-delay="110"></div>
+    <p class="section-sub" data-reveal data-delay="145">Serviços completos de engenharia civil para pessoas físicas, empresas e construtoras.</p>
+  </div>
+  <div class="servicos-grid">
+    <div class="servico-card" data-reveal data-delay="80">
+      <div class="servico-card-top">
+        <div class="servico-icon">🏗️</div>
+        <div class="servico-name">Construção do Zero</div>
+        <p class="servico-desc">Casas, sobrados, edifícios residenciais e comerciais. Do projeto executivo à entrega das chaves com equipe própria e gestão integrada.</p>
+      </div>
+      <div class="servico-card-bot"><button class="btn btn-ghost btn-full" onclick="abrirWhatsApp('servico_construcao')">Solicitar Orçamento <svg width="12" height="12" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M6 3l3 2.5-3 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+    </div>
+    <div class="servico-card" data-reveal data-delay="120">
+      <div class="servico-card-top">
+        <div class="servico-icon">🔨</div>
+        <div class="servico-name">Reformas Residenciais e Comerciais</div>
+        <p class="servico-desc">Reforma completa ou parcial com mínima interrupção da sua rotina. Acompanhamento diário e relatório de obra para sua tranquilidade.</p>
+      </div>
+      <div class="servico-card-bot"><button class="btn btn-ghost btn-full" onclick="abrirWhatsApp('servico_reforma')">Solicitar Orçamento <svg width="12" height="12" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M6 3l3 2.5-3 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+    </div>
+    <div class="servico-card" data-reveal data-delay="160">
+      <div class="servico-card-top">
+        <div class="servico-icon">📐</div>
+        <div class="servico-name">Laudos, Projetos e Consultoria</div>
+        <p class="servico-desc">Laudos estruturais, projetos complementares e pareceres técnicos assinados por engenheiro responsável. Regularização no CREA-RJ.</p>
+      </div>
+      <div class="servico-card-bot"><button class="btn btn-ghost btn-full" onclick="abrirWhatsApp('servico_laudo')">Solicitar Orçamento <svg width="12" height="12" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M6 3l3 2.5-3 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+    </div>
+    <div class="servico-card" data-reveal data-delay="200">
+      <div class="servico-card-top">
+        <div class="servico-icon">📋</div>
+        <div class="servico-name">Gerenciamento e Fiscalização de Obras</div>
+        <p class="servico-desc">Já tem construtora mas quer garantia? A A&amp;P atua como seu fiscal independente, garantindo qualidade, cronograma e controle de custos.</p>
+      </div>
+      <div class="servico-card-bot"><button class="btn btn-accent btn-full" onclick="abrirWhatsApp('servico_gerenciamento')">Solicitar Orçamento <svg width="12" height="12" viewBox="0 0 11 11" fill="none"><path d="M2 5.5h7M6 3l3 2.5-3 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  ROLLER 2 — ESPECIALISTA
+══════════════════════════════════ -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+<div class="roller roller-muted roller-mid">
+  <div class="roller-track spd-s">
+    <span class="roller-item">✦ +20 Anos de Experiência</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +200 Obras Entregues no RJ</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Engenheiro Responsável em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART CREA-RJ em Todos os Projetos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Especialização em Gestão de Obras</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos de Experiência</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +200 Obras Entregues no RJ</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Engenheiro Responsável em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART CREA-RJ em Todos os Projetos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Especialização em Gestão de Obras</span><span class="roller-item roller-sep">·</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: ESPECIALISTA
+══════════════════════════════════ -->
+<section id="especialista" class="rel">
+  <div class="esp-outer" style="position:relative;z-index:1">
+    <div class="esp-layout">
+      <!-- Coluna esquerda: foto grande -->
+      <div class="esp-photo-col" data-reveal>
+        <div class="esp-photo-sticky">
+          <div class="esp-photo-frame no-save">
+            <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774296602/Engenheiro_por_voca%C3%A7%C3%A3o_e_especialista_em_obras._Por_aqui_compartilho_conhecimento_experi_os0fdq.jpg" alt="Alexandre Pinho - A&P Engenharia" draggable="false">
+            <div class="esp-photo-caption">
+              <span class="esp-photo-name">Alexandre Pinho</span>
+              <span class="esp-photo-crm">Engenheiro Civil & Fundador · CREA-RJ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Coluna direita: copy -->
+      <div class="esp-copy" data-reveal data-delay="100">
+        <div class="eyebrow">Quem Assina Sua Obra</div>
+        <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774298926/Untitled_design_64_kg2jc0.png" alt="A&P Engenharia" class="esp-logo-inline">
+        
+        <div class="esp-highlight-box">
+          <p>A <strong>A&amp;P Engenharia</strong> foi fundada com uma missão clara: acabar com a cultura da obra problemática no Rio de Janeiro. Mais de duas décadas depois, cada projeto ainda passa pelo olhar técnico do engenheiro responsável antes de sair do papel.</p>
+        </div>
+
+        <p>Porque para a A&amp;P, entregar uma obra não é apenas finalizar uma construção — é entregar um compromisso absoluto com o seu prazo, o seu orçamento e a qualidade que o seu investimento exige.</p>
+        
+        <div class="esp-creds">
+          <div class="cred-item"><div class="cred-dot"></div>+20 anos de experiência em obras no RJ</div>
+          <div class="cred-item"><div class="cred-dot"></div>+200 obras concluídas em toda Região Metropolitana</div>
+          <div class="cred-item"><div class="cred-dot"></div>Especialização avançada em Gestão de Obras</div>
+          <div class="cred-item"><div class="cred-dot"></div>Membro ativo do CREA-RJ · ART em todos projetos</div>
+          <div class="cred-item"><div class="cred-dot"></div>Engenheiro presente em cada etapa, não só no papel</div>
+        </div>
+        <div class="esp-cta-row">
+          <button class="btn btn-accent btn-lg" onclick="abrirWhatsApp('especialista')">
+            Falar com o Engenheiro
+            <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: NÚMEROS
+══════════════════════════════════ -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+<section id="numeros" style="background:var(--accent);padding:5rem max(4vw,1.25rem)">
+  <div class="numeros-inner" data-reveal>
+    <h2 class="section-title text-center" style="margin-bottom:3.5rem; color: var(--accent-text);">Números que Provam<br>Nossa Entrega</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-num">+20</span>
+        <span class="stat-lbl">Anos de mercado</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">+200</span>
+        <span class="stat-lbl">Obras entregues</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">100%</span>
+        <span class="stat-lbl">Equipe própria</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">RJ</span>
+        <span class="stat-lbl">Toda a Região Metropolitana</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: PORTFÓLIO / DEPOIMENTOS (ROLLER)
+══════════════════════════════════ -->
+<section id="portfolio" style="background:var(--bg-primary);overflow:hidden;padding:6rem 0 5rem">
+  <div style="padding:0 max(4vw,1.25rem)">
+    <div class="text-center" style="margin-bottom:3rem">
+      <div class="eyebrow" data-reveal>Portfólio &amp; Depoimentos</div>
+      <h2 class="section-title" data-reveal data-delay="80">Obras que Falam<br><span class="text-shimmer">por Nós</span></h2>
+      <div class="divider center" data-reveal data-delay="110"></div>
+      <p class="section-sub" data-reveal data-delay="145">Role, toque ou segure os cards. Mais de 200 clientes satisfeitos em toda a Região Metropolitana do Rio.</p>
+    </div>
+  </div>
+  
+  <div class="portfolio-track-wrap" id="portfolioWrap" data-reveal data-delay="180">
+    <div class="portfolio-track" id="portfolioTrack">
+      
+      <!-- Card DESTAQUE BYD -->
+      <div class="portfolio-card">
+        <div class="portfolio-photo" style="background: url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=800&auto=format&fit=crop') center/cover;">
+          <div style="background:rgba(0,0,0,0.4); width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <span style="font-size: 2.8rem; text-shadow: 0 4px 14px rgba(0,0,0,0.6);">🚘</span>
+            <div class="portfolio-photo-label" style="color:#fff; text-shadow: 0 4px 14px rgba(0,0,0,0.6);">Comercial / Concessionária</div>
+          </div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-stars"><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg></div>
+          <div class="portfolio-google"><svg viewBox="0 0 14 14"><path d="M12.3 6.1H7v2.8h3a3.3 3.3 0 0 1-3 2A3.6 3.6 0 0 1 3.4 7 3.6 3.6 0 0 1 7 3.4c.9 0 1.7.3 2.3.9l2-2A6 6 0 0 0 7 1 6 6 0 0 0 1 7a6 6 0 0 0 6 6 5.7 5.7 0 0 0 5.8-6c0-.4 0-.6-.5-.9z" fill="#4285F4"/></svg><span>Google</span></div>
+          <p class="portfolio-text">"Execução do projeto da nossa concessionária BYD na Barra da Tijuca. Padrão internacional exigido pela marca cumprido à risca e entrega impecável."</p>
+          <div class="portfolio-author">Loja BYD Brasil</div>
+          <div class="portfolio-tipo">Barra da Tijuca, RJ · Comercial</div>
+        </div>
+      </div>
+
+      <!-- Depoimento 1 -->
+      <div class="portfolio-card">
+        <div class="portfolio-photo">
+          <span>🏠</span>
+          <div class="portfolio-photo-label">Reforma Residencial</div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-stars"><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg></div>
+          <div class="portfolio-google"><svg viewBox="0 0 14 14"><path d="M12.3 6.1H7v2.8h3a3.3 3.3 0 0 1-3 2A3.6 3.6 0 0 1 3.4 7 3.6 3.6 0 0 1 7 3.4c.9 0 1.7.3 2.3.9l2-2A6 6 0 0 0 7 1 6 6 0 0 0 1 7a6 6 0 0 0 6 6 5.7 5.7 0 0 0 5.8-6c0-.4 0-.6-.5-.9z" fill="#4285F4"/></svg><span>Google</span></div>
+          <p class="portfolio-text">"Contratei a A&amp;P para uma reforma completa do meu apartamento em Botafogo. Prazo cumprido, preço fechado desde o início e qualidade impecável. Nunca mais vou procurar outra empresa."</p>
+          <div class="portfolio-author">Carlos M.</div>
+          <div class="portfolio-tipo">Botafogo, RJ · Reforma Residencial</div>
+        </div>
+      </div>
+      
+      <!-- Depoimento 2 -->
+      <div class="portfolio-card">
+        <div class="portfolio-photo">
+          <span>🏢</span>
+          <div class="portfolio-photo-label">Laudo Técnico</div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-stars"><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg></div>
+          <div class="portfolio-google"><svg viewBox="0 0 14 14"><path d="M12.3 6.1H7v2.8h3a3.3 3.3 0 0 1-3 2A3.6 3.6 0 0 1 3.4 7 3.6 3.6 0 0 1 7 3.4c.9 0 1.7.3 2.3.9l2-2A6 6 0 0 0 7 1 6 6 0 0 0 1 7a6 6 0 0 0 6 6 5.7 5.7 0 0 0 5.8-6c0-.4 0-.6-.5-.9z" fill="#4285F4"/></svg><span>Google</span></div>
+          <p class="portfolio-text">"Precisava de um laudo estrutural urgente para regularizar um imóvel comercial. A A&amp;P resolveu em 5 dias úteis, com toda a documentação para o CREA. Profissionalismo total."</p>
+          <div class="portfolio-author">Fernanda L.</div>
+          <div class="portfolio-tipo">Barra da Tijuca, RJ · Laudo Técnico</div>
+        </div>
+      </div>
+
+      <!-- Depoimento 3 -->
+      <div class="portfolio-card">
+        <div class="portfolio-photo">
+          <span>🏗️</span>
+          <div class="portfolio-photo-label">Gerenciamento de Obra</div>
+        </div>
+        <div class="portfolio-body">
+          <div class="portfolio-stars"><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg><svg viewBox="0 0 12 12"><path d="M6 1l1.2 3.6H11L8.2 6.8l1.2 3.6L6 8.5l-3.4 1.9L3.8 6.8 1 4.6h3.8z" fill="#F4C430"/></svg></div>
+          <div class="portfolio-google"><svg viewBox="0 0 14 14"><path d="M12.3 6.1H7v2.8h3a3.3 3.3 0 0 1-3 2A3.6 3.6 0 0 1 3.4 7 3.6 3.6 0 0 1 7 3.4c.9 0 1.7.3 2.3.9l2-2A6 6 0 0 0 7 1 6 6 0 0 0 1 7a6 6 0 0 0 6 6 5.7 5.7 0 0 0 5.8-6c0-.4 0-.6-.5-.9z" fill="#4285F4"/></svg><span>Google</span></div>
+          <p class="portfolio-text">"Eles gerenciaram nossa obra enquanto a construtora executava. Economizamos tempo e evitamos erros que teriam custado caro. Recomendo a qualquer um que queira tranquilidade."</p>
+          <div class="portfolio-author">Ricardo A.</div>
+          <div class="portfolio-tipo">Nova Iguaçu, RJ · Gerenciamento</div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="portfolio-cta" data-reveal data-delay="200">
+    <p class="portfolio-headline">+200 Obras Entregues.<br>A Próxima pode ser a Sua.</p>
+    <button class="btn btn-accent btn-lg" onclick="abrirWhatsApp('portfolio')">
+      Solicitar Orçamento Gratuito
+      <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: MAPA / LOCALIZAÇÃO
+══════════════════════════════════ -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+<section id="mapa" class="rel">
+  <div class="tex-dots js-bg-reveal"></div>
+  <div class="mapa-grid" style="position:relative;z-index:1">
+    <div>
+      <div class="eyebrow" data-reveal>Onde Atendemos</div>
+      <h2 class="section-title" data-reveal data-delay="80">Atendemos Todo o<br>Rio de Janeiro</h2>
+      <div class="divider" data-reveal data-delay="100"></div>
+      <ul class="regioes-list" data-reveal data-delay="135">
+        <li class="regiao-item">
+          <svg class="regiao-icon" viewBox="0 0 17 17" fill="none"><path d="M8.5 1.5C5.74 1.5 3.5 3.74 3.5 6.5c0 4.13 5 9 5 9s5-4.87 5-9c0-2.76-2.24-5-5-5zm0 6.75a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <div><div class="regiao-name">Rio de Janeiro Capital</div><div class="regiao-bairros">Barra da Tijuca · Zona Sul · Zona Norte · Centro · Zona Oeste</div></div>
+        </li>
+        <li class="regiao-item">
+          <svg class="regiao-icon" viewBox="0 0 17 17" fill="none"><path d="M8.5 1.5C5.74 1.5 3.5 3.74 3.5 6.5c0 4.13 5 9 5 9s5-4.87 5-9c0-2.76-2.24-5-5-5zm0 6.75a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <div><div class="regiao-name">Niterói e Região dos Lagos</div><div class="regiao-bairros">Niterói · São Gonçalo · Maricá · Itaboraí</div></div>
+        </li>
+        <li class="regiao-item">
+          <svg class="regiao-icon" viewBox="0 0 17 17" fill="none"><path d="M8.5 1.5C5.74 1.5 3.5 3.74 3.5 6.5c0 4.13 5 9 5 9s5-4.87 5-9c0-2.76-2.24-5-5-5zm0 6.75a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <div><div class="regiao-name">Baixada Fluminense</div><div class="regiao-bairros">Nova Iguaçu · Duque de Caxias · Belford Roxo · São João de Meriti</div></div>
+        </li>
+      </ul>
+      <div style="display:flex;flex-direction:column;gap:1rem" data-reveal data-delay="165">
+        <button class="btn btn-accent" onclick="abrirWhatsApp('mapa')">
+          Verificar Minha Região
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6.5 3l3.5 3-3.5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="mapa-presencial">
+          <div class="mapa-presencial-icon">
+            <svg width="24" height="24" viewBox="0 0 18 18" fill="none"><rect x="2" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M2 7h14" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="11" r="1" fill="currentColor" opacity=".7"/><circle cx="9" cy="11" r="1" fill="currentColor" opacity=".7"/></svg>
+          </div>
+          <div class="mapa-presencial-text"><strong>Visita Presencial Gratuita</strong><span>Nosso engenheiro vai até você avaliar o projeto</span></div>
+          <button class="btn btn-ghost" onclick="abrirWhatsApp('mapa_visita')" style="font-size:.7rem;padding:.6rem 1.1rem;border-radius:99px;flex-shrink:0">Agendar Visita</button>
+        </div>
+        <div class="mapa-addr">
+          <svg width="18" height="18" viewBox="0 0 14 14" fill="none" style="color:var(--accent)"><path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity=".12"/></svg>
+          Av. das Américas, Barra da Tijuca, Rio de Janeiro — RJ
+        </div>
+        <div class="mapa-addr" style="font-size:.85rem">
+          <svg width="18" height="18" viewBox="0 0 14 14" fill="none" style="color:var(--accent)"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M7 4v3.2l1.8 1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Seg–Sex: 8h–18h &nbsp;|&nbsp; Sáb: 8h–13h
+        </div>
+      </div>
+    </div>
+    <div data-reveal data-delay="150">
+      <div class="mapa-embed-wrap">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117628.32833633096!2d-43.43905001331326!3d-22.973410531846934!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9bda2c22d3b27b%3A0xc3f6a29f8f4165d4!2sBarra%20da%20Tijuca%2C%20Rio%20de%20Janeiro%20-%20RJ!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+          allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="A&P Engenharia — Barra da Tijuca, RJ">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: FAQ
+══════════════════════════════════ -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+<section id="faq" class="rel">
+  <div class="faq-shell" style="position:relative;z-index:1">
+    <div class="text-center">
+      <div class="eyebrow" data-reveal>Dúvidas Frequentes</div>
+      <h2 class="section-title" data-reveal data-delay="80">Perguntas<br>Frequentes</h2>
+      <div class="divider center" data-reveal data-delay="110"></div>
+    </div>
+    <div class="faq-list" data-reveal data-delay="145" x-data="{a:null,t(i){this.a=this.a===i?null:i}}">
+      <template x-for="(f,i) in [
+        {q:'Como funciona o orçamento gratuito?',a:'Você nos envia as informações do projeto pelo WhatsApp ou formulário. Nossa equipe técnica analisa e entra em contato em até 24h para agendar uma visita ou videoconferência sem compromisso.'},
+        {q:'A A&P usa mão de obra própria ou terceirizada?',a:'100% equipe própria — pedreiros, eletricistas, encanadores e técnicos todos contratados diretamente. Isso garante padrão de qualidade e responsabilidade em todas as frentes da obra.'},
+        {q:'Vocês trabalham fora da cidade do Rio?',a:'Sim. Atendemos toda a Região Metropolitana incluindo Niterói, São Gonçalo, Baixada Fluminense e cidades vizinhas. Consulte disponibilidade para sua região.'},
+        {q:'Quais documentos são emitidos ao final da obra?',a:'Emitimos ART (Anotação de Responsabilidade Técnica) do CREA-RJ, memorial descritivo, relatório fotográfico e toda documentação necessária para habite-se e regularização do imóvel.'},
+        {q:'Posso acompanhar o andamento da minha obra?',a:'Sim. Enviamos relatórios semanais com fotos e atualizações por WhatsApp. Você também pode visitar a obra a qualquer momento com aviso prévio.'},
+        {q:'Quanto custa um orçamento?',a:'O orçamento é totalmente gratuito e sem compromisso. Nosso engenheiro visita o local, avalia o projeto e apresenta uma proposta detalhada com planilha orçamentária transparente.'},
+        {q:'Vocês emitem nota fiscal?',a:'Sim. Trabalhamos com toda a documentação legal exigida, incluindo nota fiscal de serviços, contrato de prestação de serviços e ART registrada no CREA-RJ.'}
+      ]" :key="i">
+        <div class="faq-item" :class="{open:a===i}">
+          <button class="faq-q" @click="t(i)">
+            <span x-text="f.q"></span>
+            <svg class="faq-chevron" viewBox="0 0 16 16" fill="none"><path d="M3.5 6l4.5 4.5L12.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-a" x-text="f.a"></div>
+        </div>
+      </template>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  ROLLER 3 — PRÉ-OFERTA
+══════════════════════════════════ -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+<div class="roller roller-accent roller-bot">
+  <div class="roller-track spd-f">
+    <span class="roller-item">✦ Orçamento Gratuito Sem Compromisso</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Respondemos em Até 2 Horas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Prazo e Orçamento Fechados no Contrato</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Orçamento Gratuito Sem Compromisso</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Respondemos em Até 2 Horas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Prazo e Orçamento Fechados no Contrato</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: OFERTA FINAL / CTA
+══════════════════════════════════ -->
+<section id="oferta" class="rel">
+  <div class="oferta-glow"></div>
+  <div class="oferta-inner">
+    <div class="oferta-ornament" data-reveal><div class="orn-line"></div><div class="oferta-tag">Orçamento Gratuito</div><div class="orn-line"></div></div>
+    <h2 class="oferta-title" data-reveal data-delay="80">Pronto para Tirar<br>Sua Obra do Papel?</h2>
+    <p class="oferta-sub" data-reveal data-delay="145">
+      Fale agora com nosso engenheiro. Orçamento gratuito, sem enrolação.
+      Respondemos em até 2 horas no horário comercial.
+    </p>
+    <div class="oferta-btns" data-reveal data-delay="210">
+      <button class="btn btn-accent btn-lg" onclick="abrirWhatsApp('oferta_final')">
+        Solicitar Orçamento pelo WhatsApp
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <a href="mailto:aepengenhariacivil@gmail.com" class="btn btn-outline btn-lg">
+        Enviar E-mail para Nossa Equipe
+        <svg width="15" height="15" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M1 4l5.5 4L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+    <p class="oferta-note" data-reveal data-delay="270">Seg–Sex: 8h–18h | Sáb: 8h–13h · Respondemos em até 2 horas no horário comercial.</p>
+    <div class="oferta-promise" data-reveal data-delay="300">
+      <svg viewBox="0 0 12 12" fill="none"><path d="M1.5 6l3 3 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Orçamento gratuito · Sem enrolação · Engenheiro responsável
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+  FOOTER
+══════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774296440/unnamed_ra8wtp.png" alt="A&P Engenharia" class="f-logo-img">
+      <div class="f-tag">Construções em Geral · Barra da Tijuca, RJ</div>
+      <p class="f-copy">Engenharia civil completa com mais de 20 anos de experiência no mercado carioca. Equipe própria, transparência total e compromisso real com cada obra.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Serviços</h4>
+      <ul>
+        <li><a href="#servicos">Construção do Zero</a></li>
+        <li><a href="#servicos">Reformas Residenciais</a></li>
+        <li><a href="#servicos">Laudos e Projetos</a></li>
+        <li><a href="#servicos">Gerenciamento de Obras</a></li>
+        <li><a href="#portfolio">Portfólio de Obras</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul>
+        <li><a href="#" onclick="abrirWhatsApp('footer');return false">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 2.2h2.2L5.4 5l-1.3.9a5.9 5.9 0 0 0 2.9 2.9l.9-1.3 2.8 1.2V11a.6.6 0 0 1-.6.6C4 11.6 1.4 9 1.4 3.8A.6.6 0 0 1 2 3.2z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          (21) 99684-9897
+        </a></li>
+        <li><a href="mailto:aepengenhariacivil@gmail.com">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><rect x="1" y="2.5" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M1 4l5 3.5L11 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          aepengenhariacivil@gmail.com
+        </a></li>
+        <li><a href="https://maps.google.com/?q=Barra+da+Tijuca+RJ" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M6 1C3.79 1 2 2.79 2 5c0 3.25 4 7 4 7s4-3.75 4-7c0-2.21-1.79-4-4-4zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          Av. das Américas, Barra da Tijuca — RJ
+        </a></li>
+        <li><a href="#faq">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M6 3v3.2l1.6 1.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Seg–Sex 8h–18h · Sáb 8h–13h
+        </a></li>
+        <li><a href="https://www.crea-rj.org.br" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M4 6l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CREA-RJ
+        </a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 A&amp;P Engenharia · Todos os direitos reservados</span>
+    <div style="display:flex;gap:1.5rem"><a href="#hero">Topo ↑</a><a href="#" onclick="abrirWhatsApp('footer');return false">WhatsApp</a></div>
+  </div>
+</footer>
+<div class="footer-credits">Produzido por <a href="https://instagram.com/montanatechlab" target="_blank" rel="noopener">MONTANA</a> &mdash; Soluções Digitais que Geram Resultado</div>
+
+<!-- ══════════════════════════════════
+  BOTÃO FLUTUANTE — WhatsApp e Instagram
+══════════════════════════════════ -->
+<div class="float-btns">
+  <button class="float-btn float-btn-ig" onclick="window.open('https://instagram.com/aep.engenharia', '_blank')" aria-label="Instagram">
+    <div class="float-tooltip">Nosso Instagram</div>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+  </button>
+  <button class="float-btn float-btn-wa" onclick="abrirWhatsApp('float_wa')" aria-label="WhatsApp">
+    <div class="float-tooltip">Solicitar Orçamento</div>
+    <svg width="30" height="30" viewBox="0 0 25 25" fill="none"><path d="M12.5 2C6.98 2 2.5 6.48 2.5 12c0 1.85.5 3.6 1.38 5.1L2.5 22.5l5.55-1.38A9.93 9.93 0 0 0 12.5 22c5.52 0 10-4.48 10-10s-4.48-10-10-10zm0 18a8.1 8.1 0 0 1-4.2-1.17l-.3-.18-3.1.81.83-3.04-.2-.31A8.08 8.08 0 0 1 4.4 12c0-4.45 3.65-8.1 8.1-8.1s8.1 3.65 8.1 8.1-3.65 8.1-8.1 8.1zm4.4-6.1c-.24-.12-1.43-.7-1.65-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a7.36 7.36 0 0 1-2.18-1.34 8.5 8.5 0 0 1-1.5-1.88c-.14-.24 0-.38.1-.5l.44-.5.28-.5.1-.38-.82-1.9c-.2-.5-.4-.44-.54-.44h-.5c-.16 0-.42.06-.64.3-.22.24-.86.84-.86 2.06s.88 2.38 1 2.54c.12.16 1.72 2.64 4.18 3.7.58.26 1.04.4 1.4.52.58.18 1.1.16 1.52.1.46-.08 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14z" fill="white"/></svg>
+  </button>
+</div>
+
+<script>
+/* ── WHATSAPP ── */
+const WA_NUM = '5521996849897';
+function abrirWhatsApp(origem) {
+  const msgs = {
+    'navbar':           'Olá! Vim pelo site e gostaria de solicitar um orçamento gratuito.',
+    'menu_mobile':      'Olá! Vim pelo site e gostaria de solicitar um orçamento gratuito.',
+    'hero':             'Olá! Vi o site da A&P Engenharia e gostaria de solicitar um orçamento gratuito para minha obra.',
+    'dor_prazo':        'Olá! Tive problemas com prazos em obras anteriores e gostaria de saber como a A&P trabalha.',
+    'dor_orcamento':    'Olá! Tive problemas com estouro de orçamento em obras anteriores. Quero saber como vocês trabalham.',
+    'dor_equipe':       'Olá! Tive problemas com mão de obra em obras anteriores. Quero saber mais sobre a equipe própria da A&P.',
+    'dor_transparencia':'Olá! Quero saber como funciona o acompanhamento e relatórios de obra da A&P Engenharia.',
+    'dor_retrabalho':   'Olá! Quero saber como a A&P evita retrabalho com planejamento técnico antecipado.',
+    'servico_construcao':'Olá! Tenho interesse em uma construção do zero. Gostaria de solicitar um orçamento gratuito.',
+    'servico_reforma':  'Olá! Preciso fazer uma reforma e gostaria de solicitar um orçamento gratuito da A&P Engenharia.',
+    'servico_laudo':    'Olá! Preciso de um laudo técnico/projeto e gostaria de mais informações.',
+    'servico_gerenciamento':'Olá! Tenho interesse no serviço de gerenciamento e fiscalização de obras. Podem me ajudar?',
+    'especialista':     'Olá! Gostaria de falar diretamente com o engenheiro Alexandre Pinho.',
+    'portfolio':        'Olá! Vi o portfólio da A&P Engenharia e gostaria de solicitar um orçamento.',
+    'mapa':             'Olá! Gostaria de verificar se a A&P Engenharia atende na minha região.',
+    'mapa_visita':      'Olá! Gostaria de agendar uma visita presencial gratuita para avaliação do meu projeto.',
+    'oferta_final':     'Olá! Vim pelo site da A&P Engenharia e quero solicitar um orçamento gratuito.',
+    'float_wa':         'Olá! Vim pelo site da A&P Engenharia e gostaria de solicitar um orçamento gratuito.',
+    'footer':           'Olá! Vim pelo site da A&P Engenharia e gostaria de mais informações.',
+  };
+  const t = msgs[origem] || msgs['footer'];
+  window.open('https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(t), '_blank');
+}
+
+function abrirWhatsAppQuiz(resumo) {
+  const t = 'Olá! Fiz o diagnóstico no site da A&P Engenharia.\n\n📋 *Meu projeto:*\n' + resumo + '\n\nGostaria de receber um orçamento personalizado.';
+  window.open('https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(t), '_blank');
+}
+
+/* ── PRELOADER ── */
+(function () {
+  const bar = document.getElementById('preBar');
+  const loader = document.getElementById('preloader');
+  let s = null; const d = 2200;
+  document.body.style.overflow = 'hidden';
+  function step(ts) {
+    if (!s) s = ts;
+    const p = Math.min(((ts - s) / d) * 100, 100);
+    bar.style.width = p + '%';
+    if (p < 100) requestAnimationFrame(step);
+    else setTimeout(() => { loader.classList.add('done'); document.body.style.overflow = ''; }, 350);
+  }
+  requestAnimationFrame(step);
+})();
+
+/* ── THEME TOGGLE ── */
+(function () {
+  const key = 'ap-theme';
+  const saved = localStorage.getItem(key);
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem(key, next);
+  });
+})();
+
+/* ── SCROLL REVEAL (Conteúdo e Texturas de Fundo) ── */
+(function () {
+  const els = document.querySelectorAll('[data-reveal]');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), parseInt(e.target.dataset.delay || 0));
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: .1 });
+  els.forEach(el => obs.observe(el));
+
+  const bgEls = document.querySelectorAll('.js-bg-reveal');
+  const bgObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) {
+        e.target.classList.add('tex-visible');
+        bgObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: .05 });
+  bgEls.forEach(el => bgObs.observe(el));
+})();
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+/* ── MENU MOBILE ── */
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) { closeMenu(); }
+  else {
+    menu.classList.add('open'); btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    setTimeout(() => document.addEventListener('click', outsideClose), 10);
+  }
+}
+function closeMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  menu.classList.remove('open'); btn.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
+  document.removeEventListener('click', outsideClose);
+}
+function outsideClose(e) {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+}
+
+/* ── NAVBAR SCROLL ── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+}, { passive: true });
+
+/* ── PORTFOLIO DRAG + AUTO SCROLL (INTERATIVO) ── */
+(function () {
+  const wrap = document.getElementById('portfolioWrap');
+  const track = document.getElementById('portfolioTrack');
+  if (!wrap || !track) return;
+  
+  // Duplica os cards para rolagem infinita natural
+  const cards = [...track.children];
+  cards.forEach(c => track.appendChild(c.cloneNode(true)));
+  
+  let isDragging = false, startX = 0, scrollLeft = 0;
+  let isHovered = false;
+  let autoRAF = null;
+  
+  function loop() {
+    if (!isDragging && !isHovered) {
+      wrap.scrollLeft += 0.8; // Velocidade do roller
+      // Se rolou metade do container (onde os clones começam), reseta imperceptivelmente
+      if (wrap.scrollLeft >= (track.scrollWidth / 2)) {
+        wrap.scrollLeft = 0;
+      }
+    }
+    autoRAF = requestAnimationFrame(loop);
+  }
+  
+  // Interatividade (pausa e arraste)
+  wrap.addEventListener('mouseenter', () => isHovered = true);
+  wrap.addEventListener('mouseleave', () => { isHovered = false; isDragging = false; wrap.style.cursor = 'grab'; });
+  
+  wrap.addEventListener('mousedown', e => { 
+    isDragging = true; 
+    startX = e.pageX - wrap.offsetLeft; 
+    scrollLeft = wrap.scrollLeft; 
+    wrap.style.cursor = 'grabbing'; 
+  });
+  wrap.addEventListener('mouseup', () => { isDragging = false; wrap.style.cursor = 'grab'; });
+  wrap.addEventListener('mousemove', e => { 
+    if (!isDragging) return; 
+    e.preventDefault(); 
+    wrap.scrollLeft = scrollLeft - (e.pageX - wrap.offsetLeft - startX); 
+  });
+  
+  // Mobile Touch
+  wrap.addEventListener('touchstart', e => { 
+    isHovered = true; // Pausa automático ao tocar
+    isDragging = true; 
+    startX = e.touches[0].pageX - wrap.offsetLeft; 
+    scrollLeft = wrap.scrollLeft; 
+  }, { passive: true });
+  wrap.addEventListener('touchend', () => { 
+    isDragging = false; 
+    isHovered = false; // Volta a rolar
+  });
+  wrap.addEventListener('touchmove', e => { 
+    if (!isDragging) return; 
+    wrap.scrollLeft = scrollLeft - (e.touches[0].pageX - wrap.offsetLeft - startX); 
+  }, { passive: true });
+  
+  // Inicia animação
+  autoRAF = requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
