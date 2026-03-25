@@ -21,12 +21,13 @@
   --accent-light:  #d8e6db;
   --accent-text:   #1a2e20; 
   /* Fundos com leve transparência para a marca d'água aparecer */
-  --bg-primary:    rgba(248, 249, 247, 0.96);
-  --bg-secondary:  rgba(237, 240, 236, 0.88);
+  --bg-primary:    rgba(248, 249, 247, 0.94);
+  --bg-secondary:  rgba(237, 240, 236, 0.85);
   --bg-card:       #FFFFFF;
   --text-primary:  #1C2B1E;
   --text-secondary:#4A6350;
   --border:        #C2CEBC;
+  --top-h:         38px; /* Altura do roller fixo no topo */
   --nav-h:         clamp(90px, 9vw, 115px); /* Navbar mais alta para comportar logo maior */
   --nav-bg:        rgba(248, 249, 247, 0.65);
   --nav-scroll:    rgba(248, 249, 247, 0.92);
@@ -39,8 +40,8 @@
   --accent-light:  #243327;
   --accent-text:   #0f1a11;
   /* Fundos escuros translúcidos */
-  --bg-primary:    rgba(15, 26, 17, 0.96);
-  --bg-secondary:  rgba(21, 36, 24, 0.88);
+  --bg-primary:    rgba(15, 26, 17, 0.94);
+  --bg-secondary:  rgba(21, 36, 24, 0.85);
   --bg-card:       #1B2B1E;
   --text-primary:  #F0F4F1;
   --text-secondary:#9DBF9E;
@@ -73,17 +74,17 @@ img {
 }
 button, a { font-family: inherit; }
 
-/* ── WATERMARK GLOBAL (FUNDO FIXO) ── */
+/* ── WATERMARK GLOBAL (FUNDO FIXO DA LOGO) ── */
 .global-watermark {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 90vw; max-width: 800px; height: 90vw; max-height: 800px;
-  background: url('https://res.cloudinary.com/dm9mnc97u/image/upload/v1774298926/Untitled_design_64_kg2jc0.png') no-repeat center;
+  background: url('https://res.cloudinary.com/dm9mnc97u/image/upload/v1774301079/Untitled_design_65_wrohgs.png') no-repeat center;
   background-size: contain; 
-  opacity: 0.04; 
+  opacity: 0.1; /* Aumentado para melhor visibilidade */
   z-index: -1; 
   pointer-events: none;
 }
-[data-theme="light"] .global-watermark { opacity: 0.06; }
+[data-theme="dark"] .global-watermark { opacity: 0.15; }
 
 /* ── KEYFRAMES ── */
 @keyframes marquee     { from { transform: translateX(0) }   to { transform: translateX(-50%) } }
@@ -96,28 +97,27 @@ button, a { font-family: inherit; }
 /* ── PRELOADER ── */
 #preloader {
   position: fixed; inset: 0; z-index: 9999;
-  background: #000;
+  background: #0F1A11; /* Verde base bem escuro do site */
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   transition: opacity .7s ease, visibility .7s ease;
 }
 #preloader.done { opacity: 0; visibility: hidden; pointer-events: none; }
-.pre-logo-frame {
-  width: 140px; height: 140px;
-  background: var(--accent-light);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+.pre-logo-img { 
+  max-width: 180px; 
+  height: auto; 
   margin-bottom: 2rem;
-  box-shadow: 0 0 40px rgba(136,176,142,0.3), inset 0 0 20px rgba(255,255,255,0.4);
   animation: float 4s ease-in-out infinite;
+  /* Brilho verde claro nascendo por trás da logo */
+  filter: drop-shadow(0 0 35px rgba(136,176,142,0.55));
 }
-.pre-logo-img { max-width: 85px; height: auto; }
-.pre-sub {
-  font-size: .65rem; letter-spacing: .35em;
-  color: var(--text-secondary); text-transform: uppercase; margin-bottom: 2rem;
+.pre-auth-copy {
+  font-size: .8rem; font-weight: 700; letter-spacing: .2em;
+  color: #fff; text-transform: uppercase; margin-bottom: 2rem;
   font-family: 'Outfit', sans-serif; text-align: center;
+  opacity: 0.9;
 }
-.pre-track { width: min(200px, 50vw); height: 2px; background: rgba(136,176,142,.15); border-radius: 99px; overflow: hidden; }
-.pre-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent-hover), var(--accent), #b4d1ba); }
+.pre-track { width: min(240px, 60vw); height: 3px; background: rgba(136,176,142,.15); border-radius: 99px; overflow: hidden; }
+.pre-bar { height: 100%; width: 0; background: linear-gradient(90deg, #6a9571, #88b08e, #d8e6db); }
 
 /* ── SCROLL REVEAL ── */
 [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity .65s cubic-bezier(0.2, 0.8, 0.2, 1), transform .65s cubic-bezier(0.2, 0.8, 0.2, 1); }
@@ -163,18 +163,29 @@ button, a { font-family: inherit; }
 /* ── ROLLER ── */
 .roller { overflow: hidden; white-space: nowrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .roller-mid, .roller-bot { padding: .85rem 0; }
-.roller-track { display: inline-flex; will-change: transform; }
-.roller-track.spd-n { animation: marquee 38s linear infinite; }
-.roller-track.spd-s { animation: marquee 52s linear infinite; }
-.roller-track.spd-f { animation: marquee 24s linear infinite; }
-.roller-item { display: inline-flex; align-items: center; gap: .8rem; font-family: 'Outfit', sans-serif; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; font-size: .7rem; }
+.roller-track { display: inline-flex; will-change: transform; align-items: center;}
+/* Tempos reduzidos para rodarem mais rápido */
+.roller-track.spd-n { animation: marquee 14s linear infinite; }
+.roller-track.spd-s { animation: marquee 18s linear infinite; }
+.roller-track.spd-f { animation: marquee 11s linear infinite; }
+.roller-item { display: inline-flex; align-items: center; gap: .8rem; font-family: 'Outfit', sans-serif; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; font-size: .7rem; }
 .roller-accent { background: var(--accent); border-color: transparent;} .roller-accent .roller-item { color: var(--accent-text); }
 .roller-muted { background: var(--bg-secondary); } .roller-muted .roller-item { color: var(--accent); }
-.roller-sep { opacity: .4; }
+/* Aumentado o espaço entre as cópias */
+.roller-sep { opacity: .4; margin: 0 4rem; } 
+
+/* ── TOP ROLLER (FIXED ABOVE NAVBAR) ── */
+#top-roller {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 801;
+  height: var(--top-h);
+  border: none; border-bottom: 1px solid rgba(0,0,0,0.1);
+  display: flex; align-items: center;
+}
+[data-theme="dark"] #top-roller { border-bottom-color: rgba(255,255,255,0.05); }
 
 /* ── NAVBAR ── */
 #navbar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+  position: fixed; top: var(--top-h); left: 0; right: 0; z-index: 800;
   height: var(--nav-h); 
   background: var(--nav-bg);
   backdrop-filter: blur(14px);
@@ -182,8 +193,9 @@ button, a { font-family: inherit; }
   border-bottom: 1px solid rgba(136,176,142,0.15);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 max(4vw,1rem);
-  transition: border-color .3s, background .3s, box-shadow .3s, height .3s;
+  transition: top 0.3s, border-color .3s, background .3s, box-shadow .3s, height .3s;
 }
+body.is-scrolled #navbar { top: 0; }
 #navbar.scrolled {
   background: var(--nav-scroll);
   border-bottom-color: var(--accent);
@@ -191,7 +203,7 @@ button, a { font-family: inherit; }
 }
 .nav-logo { display: flex; align-items: center; text-decoration: none; }
 .nav-logo-img { 
-  height: clamp(65px, 8vw, 100px); /* Aumento expressivo da logo */
+  height: clamp(65px, 8vw, 100px); 
   width: auto; 
   object-fit: contain; 
   filter: drop-shadow(0px 0px 18px rgba(136, 176, 142, 0.8)); 
@@ -216,7 +228,8 @@ button, a { font-family: inherit; }
 .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-#mobile-menu { position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 790; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1.5rem max(4vw,1rem) 2rem; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+#mobile-menu { position: fixed; top: calc(var(--nav-h) + var(--top-h)); left: 0; right: 0; z-index: 790; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 1.5rem max(4vw,1rem) 2rem; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: top 0.3s, opacity .25s ease, transform .25s ease; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+body.is-scrolled #mobile-menu { top: var(--nav-h); }
 #mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
 .mobile-nav-links { list-style: none; margin-bottom: 1.5rem; }
 .mobile-nav-links li { border-bottom: 1px solid var(--border); }
@@ -233,10 +246,10 @@ section { padding: 6rem max(4vw, 1.25rem); position: relative; }
 .text-center { text-align: center; }
 
 /* ── SECTION SEPARATOR ── */
-.sec-sep { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1.2rem max(4vw,1.25rem); background: var(--bg-primary); }
-.sec-sep::before, .sec-sep::after { content: ''; flex: 1; max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
-.sec-sep-diamond { width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); opacity: .7; flex-shrink: 0; }
-.sec-sep-line { width: 40px; height: 1px; background: var(--border); flex-shrink: 0; }
+.sec-sep { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 2rem max(4vw,1.25rem); background: var(--bg-primary); position: relative; z-index: 2;}
+.sec-sep::before, .sec-sep::after { content: ''; flex: 1; max-width: 120px; height: 1.5px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+.sec-sep-diamond { width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); opacity: .9; flex-shrink: 0; }
+.sec-sep-line { width: 40px; height: 1.5px; background: var(--border); flex-shrink: 0; opacity: 0.5;}
 
 /* ── TEXTURE UTILITIES ── */
 .tex-lines { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(45deg, transparent, transparent 38px, rgba(136,176,142,.04) 38px, rgba(136,176,142,.04) 39px); opacity: 0; transition: opacity 1.5s ease; }
@@ -247,7 +260,7 @@ section { padding: 6rem max(4vw, 1.25rem); position: relative; }
 /* ── HERO ── */
 #hero { 
   min-height: 100svh; 
-  padding-top: calc(var(--nav-h) + 2rem); 
+  padding-top: calc(var(--nav-h) + var(--top-h) + 2rem); 
   display: flex; align-items: center; 
   position: relative; overflow: hidden; 
   background-image: url('https://images.unsplash.com/photo-1541888086425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop');
@@ -264,6 +277,10 @@ section { padding: 6rem max(4vw, 1.25rem); position: relative; }
   background: linear-gradient(to bottom, rgba(15, 26, 17, 0.92) 0%, rgba(136,176,142,0.45) 100%);
 }
 .hero-glow { position: absolute; bottom: -20%; left: 50%; transform: translateX(-50%); width: 70vw; height: 70vw; max-width: 700px; max-height: 700px; background: radial-gradient(circle, rgba(136,176,142,.3) 0%, transparent 70%); pointer-events: none; z-index: 1; }
+/* Logo Fixa ao fundo da copy do hero */
+.hero-watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vw; max-width: 750px; height: 90vw; max-height: 750px; background: url('https://res.cloudinary.com/dm9mnc97u/image/upload/v1774298926/Untitled_design_64_kg2jc0.png') no-repeat center; background-size: contain; opacity: 0.15; z-index: 1; pointer-events: none; }
+[data-theme="dark"] .hero-watermark { opacity: 0.2; }
+
 .hero-inner { position: relative; z-index: 2; width: 100%; max-width: 900px; margin: 0 auto; padding: 2rem max(4vw,1.25rem) 4rem; text-align: center; }
 .hero-badge { display: inline-flex; align-items: center; gap: .6rem; background: var(--accent-light); border: 1px solid var(--accent); border-radius: 99px; padding: .5rem 1.2rem; font-family: 'Outfit', sans-serif; font-size: .75rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: var(--accent); margin-bottom: 2.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 .badge-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulseRing 1.6s ease-in-out infinite; }
@@ -335,6 +352,18 @@ section { padding: 6rem max(4vw, 1.25rem); position: relative; }
 .esp-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; align-items: center; }
 .esp-photo-col { position: relative; }
 .esp-photo-sticky { position: sticky; top: 120px; }
+
+/* NOME COMO AUTORIDADE */
+.esp-auth-name {
+  font-family: 'Outfit', sans-serif; font-size: 1.45rem; font-weight: 900; 
+  color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; 
+  margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.8rem;
+}
+.esp-auth-name::before {
+  content: ''; display: inline-block; width: 35px; height: 3px;
+  background: var(--accent); border-radius: 2px;
+}
+
 .esp-photo-frame {
   width: 100%; aspect-ratio: 1/1; min-height: 350px; 
   border-radius: 24px; overflow: hidden;
@@ -344,16 +373,15 @@ section { padding: 6rem max(4vw, 1.25rem); position: relative; }
   background: var(--bg-card);
   display: flex; align-items: flex-end;
 }
-/* Anti-download layer: block pointer events on wrapper or use transparent pseudo element */
-.esp-photo-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 50%); z-index: 10; }
+/* Anti-download layer cover */
+.esp-photo-frame::after { content: ''; position: absolute; inset: 0; z-index: 10; background: transparent; }
 .esp-photo-caption { position: relative; z-index: 11; padding: 1.8rem; width: 100%; }
 .esp-photo-name { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800; color: #fff; display: block; margin-bottom: .2rem;}
 .esp-photo-crm { font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); display: block; }
 
-.esp-logo-inline { max-width: 180px; height: auto; margin-bottom: 1.2rem; display: block; filter: drop-shadow(0px 4px 12px rgba(136,176,142,0.3));}
+.esp-logo-inline { max-width: 100px; height: auto; margin-bottom: 1.2rem; display: block; filter: drop-shadow(0px 4px 12px rgba(136,176,142,0.3));}
 .esp-copy .section-title { margin-bottom: 0.3rem; font-size: clamp(2rem, 5vw, 2.8rem); }
 .esp-copy .esp-cargo { font-family: 'Outfit', sans-serif; font-size: 1.15rem; color: var(--accent); font-weight: 700; margin-bottom: 2rem; letter-spacing: .02em; }
-/* Nova caixa de destaque para a copy */
 .esp-highlight-box {
   background: var(--bg-secondary);
   border-left: 4px solid var(--accent);
@@ -442,14 +470,13 @@ section { padding: 6rem max(4vw, 1.25rem); position: relative; }
 .oferta-title { font-family: 'Outfit', sans-serif; font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 900; line-height: 1.1; color: var(--text-primary); margin-bottom: 1.2rem; letter-spacing: -0.02em;}
 .oferta-sub { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 2.5rem; }
 .oferta-btns { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
-/* Correção do Check/V Gigante -> Limitando o tamanho do ícone SVG! */
 .oferta-promise { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: 1.5rem; font-size: .75rem; color: var(--text-secondary); font-weight: 500; }
 .oferta-promise svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
 
 /* ── FOOTER ── */
 footer { background: var(--bg-primary); border-top: 1px solid var(--border); padding: 5rem max(4vw,1.25rem) 0; }
 .footer-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
-.footer-brand .f-logo-img { max-width: 140px; border-radius: 12px; height: auto; margin-bottom: 1.2rem; }
+.footer-brand .f-logo-img { max-width: 150px; border-radius: 12px; height: auto; margin-bottom: 1.2rem; }
 .footer-brand .f-tag { font-family: 'Outfit', sans-serif; font-size: .7rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 1.5rem; }
 .footer-brand .f-copy { font-size: .9rem; color: var(--text-secondary); line-height: 1.8; max-width: 300px; }
 .footer-col h4 { font-family: 'Outfit', sans-serif; font-size: .8rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; }
@@ -496,11 +523,32 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   PRELOADER
 ══════════════════════════════════ -->
 <div id="preloader">
-  <div class="pre-logo-frame">
-    <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774296440/unnamed_ra8wtp.png" alt="A&P Engenharia" class="pre-logo-img">
-  </div>
-  <div class="pre-sub">Construções em Geral · Rio de Janeiro</div>
+  <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774301079/Untitled_design_65_wrohgs.png" alt="A&P Engenharia" class="pre-logo-img">
+  <div class="pre-auth-copy">Construindo Confiança · Entregando Qualidade</div>
   <div class="pre-track"><div class="pre-bar" id="preBar"></div></div>
+</div>
+
+<!-- ══════════════════════════════════
+  TOP ROLLER (FIXO ACIMA DA NAVBAR)
+══════════════════════════════════ -->
+<div id="top-roller" class="roller roller-accent">
+  <div class="roller-track spd-n" style="height:100%;">
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
+    <!-- Repeat para loop -->
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════
@@ -544,6 +592,7 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
 <section id="hero">
   <div class="hero-overlay"></div>
   <div class="hero-glow"></div>
+  <div class="hero-watermark"></div>
   <div class="hero-inner">
     <div class="hero-badge" data-reveal><span class="badge-pulse"></span>O Fim da Dor de Cabeça na Sua Obra</div>
     <h1 class="hero-title" data-reveal data-delay="80">
@@ -563,24 +612,29 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
+<!-- SEPARADOR -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
 <!-- ══════════════════════════════════
   ROLLER 1 — ENTRE HERO E DOR
 ══════════════════════════════════ -->
-<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 <div class="roller roller-accent roller-mid">
   <div class="roller-track spd-n">
-    <span class="roller-item">✦ Engenharia Civil Completa</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Equipe Própria 100%</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Obras com ART CREA-RJ</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ +20 Anos de Mercado</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Transparência Total na Obra</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Toda a Região Metropolitana do Rio</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Engenharia Civil Completa</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Equipe Própria 100%</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Obras com ART CREA-RJ</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ +20 Anos de Mercado</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Transparência Total na Obra</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Toda a Região Metropolitana do Rio</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
+    <!-- Repeat -->
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
   </div>
 </div>
 
@@ -678,6 +732,7 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </p>
 </section>
 
+<!-- SEPARADOR -->
 <div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 
 <!-- ══════════════════════════════════
@@ -757,6 +812,7 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
+<!-- SEPARADOR -->
 <div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 
 <!-- ══════════════════════════════════
@@ -805,22 +861,29 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
+<!-- SEPARADOR -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
 <!-- ══════════════════════════════════
   ROLLER 2 — ESPECIALISTA
 ══════════════════════════════════ -->
-<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 <div class="roller roller-muted roller-mid">
   <div class="roller-track spd-s">
-    <span class="roller-item">✦ +20 Anos de Experiência</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ +200 Obras Entregues no RJ</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Engenheiro Responsável em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ ART CREA-RJ em Todos os Projetos</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Especialização em Gestão de Obras</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ +20 Anos de Experiência</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ +200 Obras Entregues no RJ</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Engenheiro Responsável em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ ART CREA-RJ em Todos os Projetos</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Especialização em Gestão de Obras</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
+    <!-- Repeat -->
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
   </div>
 </div>
 
@@ -833,6 +896,9 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
       <!-- Coluna esquerda: foto grande -->
       <div class="esp-photo-col" data-reveal>
         <div class="esp-photo-sticky">
+          <!-- Nome como Autoridade acima da foto -->
+          <div class="esp-auth-name">Eng. Alexandre Pinho</div>
+          
           <div class="esp-photo-frame no-save">
             <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774296602/Engenheiro_por_voca%C3%A7%C3%A3o_e_especialista_em_obras._Por_aqui_compartilho_conhecimento_experi_os0fdq.jpg" alt="Alexandre Pinho - A&P Engenharia" draggable="false">
             <div class="esp-photo-caption">
@@ -871,24 +937,28 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-  SEÇÃO: NÚMEROS
-══════════════════════════════════ -->
+<!-- SEPARADOR -->
 <div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
+<!-- ══════════════════════════════════
+  SEÇÃO: NÚMEROS (COM ANIMAÇÃO DE CONTADOR)
+══════════════════════════════════ -->
 <section id="numeros" style="background:var(--accent);padding:5rem max(4vw,1.25rem)">
   <div class="numeros-inner" data-reveal>
     <h2 class="section-title text-center" style="margin-bottom:3.5rem; color: var(--accent-text);">Números que Provam<br>Nossa Entrega</h2>
+    
     <div class="stats-grid">
       <div class="stat-item">
-        <span class="stat-num">+20</span>
+        <!-- Adicionados atributos data-count para animação JS -->
+        <span class="stat-num" data-count="20" data-prefix="+">0</span>
         <span class="stat-lbl">Anos de mercado</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num">+200</span>
+        <span class="stat-num" data-count="200" data-prefix="+">0</span>
         <span class="stat-lbl">Obras entregues</span>
       </div>
       <div class="stat-item">
-        <span class="stat-num">100%</span>
+        <span class="stat-num" data-count="100" data-suffix="%">0</span>
         <span class="stat-lbl">Equipe própria</span>
       </div>
       <div class="stat-item">
@@ -896,8 +966,20 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
         <span class="stat-lbl">Toda a Região Metropolitana</span>
       </div>
     </div>
+
+    <!-- CTA após os números -->
+    <div class="text-center" data-reveal data-delay="300" style="margin-top: 3.5rem;">
+      <button class="btn" style="background: #fff; color: var(--accent-text); font-size: .9rem; padding: 1.1rem 2.2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.15);" onclick="abrirWhatsApp('numeros')">
+        Falar com a Equipe
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7.5 3.5l4 3.5-4 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
   </div>
 </section>
+
+<!-- SEPARADOR -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 
 <!-- ══════════════════════════════════
   SEÇÃO: PORTFÓLIO / DEPOIMENTOS (ROLLER)
@@ -988,10 +1070,12 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
+<!-- SEPARADOR -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
 <!-- ══════════════════════════════════
   SEÇÃO: MAPA / LOCALIZAÇÃO
 ══════════════════════════════════ -->
-<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 <section id="mapa" class="rel">
   <div class="tex-dots js-bg-reveal"></div>
   <div class="mapa-grid" style="position:relative;z-index:1">
@@ -1047,10 +1131,12 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
+<!-- SEPARADOR -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
 <!-- ══════════════════════════════════
   SEÇÃO: FAQ
 ══════════════════════════════════ -->
-<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 <section id="faq" class="rel">
   <div class="faq-shell" style="position:relative;z-index:1">
     <div class="text-center">
@@ -1080,20 +1166,29 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
   </div>
 </section>
 
+<!-- SEPARADOR -->
+<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
+
 <!-- ══════════════════════════════════
   ROLLER 3 — PRÉ-OFERTA
 ══════════════════════════════════ -->
-<div class="sec-sep"><div class="sec-sep-line"></div><div class="sec-sep-diamond"></div><div class="sec-sep-line"></div></div>
 <div class="roller roller-accent roller-bot">
   <div class="roller-track spd-f">
-    <span class="roller-item">✦ Orçamento Gratuito Sem Compromisso</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Respondemos em Até 2 Horas</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Prazo e Orçamento Fechados no Contrato</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Equipe Própria em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Orçamento Gratuito Sem Compromisso</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Respondemos em Até 2 Horas</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Prazo e Orçamento Fechados no Contrato</span><span class="roller-item roller-sep">·</span>
-    <span class="roller-item">✦ Equipe Própria em Todas as Frentes</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
+    <!-- Repeat -->
+    <span class="roller-item">✦ Preço Fechado</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Equipe Própria</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Sem Atrasos</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ ART Inclusa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Obra Limpa</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ Zero Surpresas</span><span class="roller-item roller-sep">·</span>
+    <span class="roller-item">✦ +20 Anos</span><span class="roller-item roller-sep">·</span>
   </div>
 </div>
 
@@ -1119,7 +1214,7 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
         <svg width="15" height="15" viewBox="0 0 13 13" fill="none"><rect x="1" y="3" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M1 4l5.5 4L12 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </a>
     </div>
-    <p class="oferta-note" data-reveal data-delay="270">Seg–Sex: 8h–18h | Sáb: 8h–13h · Respondemos em até 2 horas no horário comercial.</p>
+    <p class="oferta-note" data-reveal data-delay="270">Seg–Sex: 8h–18h | Sáb: 8h–13h · <strong>Resposta imediata dentro do horário.</strong></p>
     <div class="oferta-promise" data-reveal data-delay="300">
       <svg viewBox="0 0 12 12" fill="none"><path d="M1.5 6l3 3 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Orçamento gratuito · Sem enrolação · Engenheiro responsável
@@ -1133,7 +1228,7 @@ footer { background: var(--bg-primary); border-top: 1px solid var(--border); pad
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774296440/unnamed_ra8wtp.png" alt="A&P Engenharia" class="f-logo-img">
+      <img src="https://res.cloudinary.com/dm9mnc97u/image/upload/v1774301079/Untitled_design_65_wrohgs.png" alt="A&P Engenharia" class="f-logo-img">
       <div class="f-tag">Construções em Geral · Barra da Tijuca, RJ</div>
       <p class="f-copy">Engenharia civil completa com mais de 20 anos de experiência no mercado carioca. Equipe própria, transparência total e compromisso real com cada obra.</p>
     </div>
@@ -1212,6 +1307,7 @@ function abrirWhatsApp(origem) {
     'servico_laudo':    'Olá! Preciso de um laudo técnico/projeto e gostaria de mais informações.',
     'servico_gerenciamento':'Olá! Tenho interesse no serviço de gerenciamento e fiscalização de obras. Podem me ajudar?',
     'especialista':     'Olá! Gostaria de falar diretamente com o engenheiro Alexandre Pinho.',
+    'numeros':          'Olá! Vi os resultados e experiência da A&P e gostaria de falar com a equipe sobre o meu projeto.',
     'portfolio':        'Olá! Vi o portfólio da A&P Engenharia e gostaria de solicitar um orçamento.',
     'mapa':             'Olá! Gostaria de verificar se a A&P Engenharia atende na minha região.',
     'mapa_visita':      'Olá! Gostaria de agendar uma visita presencial gratuita para avaliação do meu projeto.',
@@ -1257,8 +1353,9 @@ function abrirWhatsAppQuiz(resumo) {
   });
 })();
 
-/* ── SCROLL REVEAL (Conteúdo e Texturas de Fundo) ── */
+/* ── SCROLL REVEAL & NUMBER ANIMATION ── */
 (function () {
+  // Animação de entrada dos elementos
   const els = document.querySelectorAll('[data-reveal]');
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -1270,6 +1367,7 @@ function abrirWhatsAppQuiz(resumo) {
   }, { threshold: .1 });
   els.forEach(el => obs.observe(el));
 
+  // Revela texturas
   const bgEls = document.querySelectorAll('.js-bg-reveal');
   const bgObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -1280,6 +1378,35 @@ function abrirWhatsAppQuiz(resumo) {
     });
   }, { threshold: .05 });
   bgEls.forEach(el => bgObs.observe(el));
+  
+  // Contador inteligente (dispara só quando entra na tela)
+  const counters = document.querySelectorAll('[data-count]');
+  const counterObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        const counter = entry.target;
+        const target = +counter.getAttribute('data-count');
+        const prefix = counter.getAttribute('data-prefix') || '';
+        const suffix = counter.getAttribute('data-suffix') || '';
+        let count = 0;
+        const duration = 2000; // Duração em ms
+        const increment = target / (duration / 16); // Incremento baseado em ~60fps
+        
+        const updateCount = () => {
+          count += increment;
+          if(count < target) {
+            counter.innerText = prefix + Math.ceil(count) + suffix;
+            requestAnimationFrame(updateCount);
+          } else {
+            counter.innerText = prefix + target + suffix;
+          }
+        };
+        updateCount();
+        observer.unobserve(counter);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObserver.observe(c));
 })();
 
 /* ── SMOOTH SCROLL ── */
@@ -1319,8 +1446,10 @@ function outsideClose(e) {
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
   if (window.scrollY > 40) {
+    document.body.classList.add('is-scrolled');
     nav.classList.add('scrolled');
   } else {
+    document.body.classList.remove('is-scrolled');
     nav.classList.remove('scrolled');
   }
 }, { passive: true });
